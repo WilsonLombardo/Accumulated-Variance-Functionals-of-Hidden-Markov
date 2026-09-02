@@ -1,0 +1,1171 @@
+\section{Explicit two-point minimax lower bounds}
+\label{sec:minimax-lower-bound}
+
+Let \(P_\theta^{(T)}\) denote the law of the observed trajectory in the
+capped-geometric Gaussian submodel of
+Section~\ref{sec:explicit-capped-gaussian}.  The data length remains \(T\)
+and the target horizon remains \(N\).
+
+For fixed \(p^\circ=(p_1^\circ,p_2^\circ)\in(p_-,p_+)^2\), let
+\(Q^\circ\) and \(\eta^\circ\) be the transition matrix and stationary law
+of the augmented age chain.  Put
+\[
+ y(i,r)=2\mathbf 1_{\{i=2\}}-1,\qquad
+ \alpha^\circ=(\eta^\circ)^\top y,\qquad
+ \bar y=y-\alpha^\circ\mathbf 1,
+\]
+\[
+ \Pi^\circ=\mathbf 1(\eta^\circ)^\top,\qquad
+ R^\circ=Q^\circ-\Pi^\circ,
+\]
+and use the stationary inner product
+\(\langle u,v\rangle_{\eta^\circ}
+=u^\top\operatorname{diag}(\eta^\circ)v\).  Define
+\begin{align}
+ A_N^\circ
+ &:=
+ \operatorname{Var}_{p^\circ}\!\left(\sum_{t=1}^N Y_t\right)
+ \nonumber\\
+ &=N\langle\bar y,\bar y\rangle_{\eta^\circ}
+ +2\left\langle
+ \bar y,\,
+ R^\circ\{(N-1)I-NR^\circ+(R^\circ)^N\}
+ (I-R^\circ)^{-2}\bar y
+ \right\rangle_{\eta^\circ}.
+ \label{eq:lb-AN}
+\end{align}
+If \(\tau_i^\circ=\tau_D(p_i^\circ)\) and
+\(\nu_i^{\circ\,2}=\operatorname{Var}\{\min(G_i,D)\}\), set
+\begin{equation}
+ A_\infty^\circ
+ =
+ 4\,
+ \frac{(\tau_2^\circ)^2\nu_1^{\circ\,2}
+       +(\tau_1^\circ)^2\nu_2^{\circ\,2}}
+      {(\tau_1^\circ+\tau_2^\circ)^3}.
+ \label{eq:lb-Ainfty}
+\end{equation}
+The two target functionals along the amplitude submodel are therefore
+\begin{equation}
+ G_N(a,p^\circ)=N\sigma^2+a^2A_N^\circ,\qquad
+ v_\infty(a,p^\circ)=\sigma^2+a^2A_\infty^\circ.
+ \label{eq:lb-target-amplitude}
+\end{equation}
+
+\subsection{An explicit relative-entropy envelope}
+
+For \(p\in(0,1)\), define
+\[
+ \tau_D(p)=\sum_{r=0}^{D-1}(1-p)^r,\qquad
+ e_D(p)=\sum_{r=0}^{D-2}(1-p)^r,
+\]
+\[
+ c_D(p)=\sum_{r=0}^{D-1}r(1-p)^r
+ =\frac{(1-p)-D(1-p)^D+(D-1)(1-p)^{D+1}}{p^2},
+\]
+and
+\[
+ \operatorname{kl}(u\|v)
+ =u\log\frac uv+(1-u)\log\frac{1-u}{1-v}.
+\]
+
+\begin{lemma}[Complete-data entropy envelope]
+\label{lem:lb-complete-kl}
+For \(\theta=(a,p_1,p_2)\) and
+\(\theta'=(a',p_1',p_2')\), write
+\(T_c(\theta)=\tau_D(p_1)+\tau_D(p_2)\).  Then
+\begin{align}
+ D_{\mathrm{KL}}\!\left(P_\theta^{(T)}\middle\|P_{\theta'}^{(T)}\right)
+ \leq \mathcal K_T(\theta,\theta')
+ &:=
+ \log\frac{T_c(\theta')}{T_c(\theta)}
+ +\frac{1}{T_c(\theta)}
+ \sum_{i=1}^2c_D(p_i)
+ \log\frac{1-p_i}{1-p_i'}
+ \nonumber\\
+ &\quad
+ +(T-1)\sum_{i=1}^2
+ \frac{e_D(p_i)}{T_c(\theta)}
+ \operatorname{kl}(p_i\|p_i')
+ +\frac{T(a-a')^2}{2\sigma^2}.
+ \label{eq:lb-complete-kl}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+The stationary law of the augmented age chain is
+\[
+ \eta_\theta(i,r)=
+ \frac{(1-p_i)^{r-1}}{T_c(\theta)},\qquad 1\leq r\leq D.
+\]
+Consequently,
+\[
+ D_{\mathrm{KL}}(\eta_\theta\|\eta_{\theta'})
+ =
+ \log\frac{T_c(\theta')}{T_c(\theta)}
+ +\frac{1}{T_c(\theta)}
+ \sum_{i=1}^2c_D(p_i)
+ \log\frac{1-p_i}{1-p_i'}.
+\]
+At an age \(r<D\), the transition row is Bernoulli with switching
+probability \(p_i\); at \(r=D\), the exit is forced under both parameters.
+Stationarity thus makes the transition contribution equal to
+\[
+ (T-1)\sum_{i=1}^2
+ \frac{e_D(p_i)}{T_c(\theta)}
+ \operatorname{kl}(p_i\|p_i').
+\]
+The conditional Gaussian contribution is
+\[
+ \sum_{t=1}^T
+ D_{\mathrm{KL}}\{N(aY_t,\sigma^2)\|N(a'Y_t,\sigma^2)\}
+ =\frac{T(a-a')^2}{2\sigma^2}.
+\]
+The chain rule gives equality for the complete trajectory
+\((Z_{1:T},X_{1:T})\); projection onto \(X_{1:T}\) proves
+\eqref{eq:lb-complete-kl}.
+\end{proof}
+
+\subsection{Finite-sample two-point bound}
+
+\begin{theorem}[Explicit minimax lower bound]
+\label{thm:lb-two-point}
+Fix \(a_0\in[a_-,a_+)\), \(p^\circ\in(p_-,p_+)^2\), and
+\(0<d\leq a_+-a_0\).  Let
+\(\theta_0=(a_0,p^\circ)\) and
+\(\theta_1=(a_0+d,p^\circ)\).  Every estimator based on \(X_{1:T}\)
+satisfies
+\begin{align}
+ \max_{j=0,1}
+ P_{\theta_j}^{(T)}
+ \left\{\|\widehat\theta_T-\theta_j\|_2\geq\frac d2\right\}
+ &\geq
+ \frac14\exp\!\left\{-\frac{Td^2}{2\sigma^2}\right\},
+ \label{eq:lb-theta}\\
+ \max_{j=0,1}
+ P_{\theta_j}^{(T)}
+ \left\{\left|\widehat G_{N,T}-G_N(\theta_j)\right|
+ \geq\frac{A_N^\circ}{2}(2a_0d+d^2)\right\}
+ &\geq
+ \frac14\exp\!\left\{-\frac{Td^2}{2\sigma^2}\right\},
+ \label{eq:lb-GN}\\
+ \max_{j=0,1}
+ P_{\theta_j}^{(T)}
+ \left\{\left|\widehat v_{\infty,T}-v_\infty(\theta_j)\right|
+ \geq\frac{A_\infty^\circ}{2}(2a_0d+d^2)\right\}
+ &\geq
+ \frac14\exp\!\left\{-\frac{Td^2}{2\sigma^2}\right\}.
+ \label{eq:lb-vinfty}
+\end{align}
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:lb-complete-kl}, with \(p^\circ\) fixed, gives
+\[
+ D_{\mathrm{KL}}\!\left(
+ P_{\theta_0}^{(T)}\middle\|P_{\theta_1}^{(T)}
+ \right)
+ \leq \frac{Td^2}{2\sigma^2}.
+\]
+The nearest-point test associated with any estimator and the
+Bretagnolle--Huber inequality \cite{BretagnolleHuber1978} give
+\[
+ \max_{j=0,1}P_{\theta_j}^{(T)}
+ \left\{d_g(\widehat g_T,g(\theta_j))
+ \geq\frac{d_g(g(\theta_0),g(\theta_1))}{2}\right\}
+ \geq
+ \frac14
+ \exp\!\left\{
+ -D_{\mathrm{KL}}(P_{\theta_0}^{(T)}\|P_{\theta_1}^{(T)})
+ \right\}.
+\]
+Here \(d_g\) is Euclidean distance for \(g(\theta)=\theta\) and absolute
+distance for the scalar functionals.
+Equation~\eqref{eq:lb-target-amplitude} supplies the three separations in
+\eqref{eq:lb-theta}--\eqref{eq:lb-vinfty}.
+\end{proof}
+
+\begin{corollary}[Necessary confidence radii and matching rate]
+\label{cor:lb-confidence}
+For \(0<\delta<1/8\), put
+\[
+ d_{T,\delta}
+ =\sigma\sqrt{\frac{2}{T}\log\frac{1}{8\delta}},
+ \qquad
+ y_\delta=\log\frac{10}{\delta},
+ \qquad M=T-2,
+\]
+and assume \(d_{T,\delta}\leq a_+-a_0\).  If
+\(\mathfrak r_{T,\delta}(g)\) denotes the smallest uniform
+\((1-\delta)\)-confidence radius for \(g\), namely
+\[
+ \mathfrak r_{T,\delta}(g)
+ =
+ \inf_{\widehat g}\inf\left\{r>0:
+ \sup_{\theta\in\Theta_{\rm cg}}
+ P_\theta^{(T)}
+ \{\ell_g(\widehat g,g(\theta))>r\}\leq\delta\right\},
+\]
+where \(\ell_\theta\) is Euclidean distance and the two functional losses
+are absolute distance, then
+\begin{align}
+ \mathfrak r_{T,\delta}(\theta)
+ &\geq\frac{d_{T,\delta}}2,
+ \label{eq:lb-radius-theta}\\
+ \mathfrak r_{T,\delta}(G_N)
+ &\geq A_N^\circ
+ \left(a_0d_{T,\delta}+\frac{d_{T,\delta}^2}{2}\right),
+ \label{eq:lb-radius-GN}\\
+ \mathfrak r_{T,\delta}(v_\infty)
+ &\geq A_\infty^\circ
+ \left(a_0d_{T,\delta}+\frac{d_{T,\delta}^2}{2}\right).
+ \label{eq:lb-radius-vinfty}
+\end{align}
+For the estimator of Section~\ref{sec:explicit-capped-gaussian}, define
+\[
+ U_{T,\delta}
+ =
+ 2K_{\rm id,cg}
+ \left[
+ \frac{40y_\delta}{M\underline g_3}
+ +\sqrt{\frac{8y_\delta}{M\underline g_3}
+ \left(1+\frac{1}{M\underline g_3}\right)}
+ \right].
+\]
+Then
+\begin{equation}
+ \mathfrak r_{T,\delta}(\theta)\leq U_{T,\delta},
+ \qquad
+ \mathfrak r_{T,\delta}(g)\leq L_gU_{T,\delta},
+ \quad g\in\{G_N,v_\infty\},
+ \label{eq:lb-upper-radius}
+\end{equation}
+where \(L_g\) is the Lipschitz constant of \(g\) on
+\(\Theta_{\rm cg}\).  Hence, for a fixed interior parameter box,
+\[
+ \mathfrak r_{T,\delta}(\theta)
+ \asymp
+ \sqrt{\frac{\log(1/\delta)}{T}},
+ \qquad
+ \mathfrak r_{T,\delta}(v_\infty)
+ \asymp
+ \sqrt{\frac{\log(1/\delta)}{T}},
+\]
+up to structural constants.  Moreover,
+\begin{equation}
+ \frac{A_N^\circ}{N}\longrightarrow A_\infty^\circ>0,
+ \label{eq:lb-AN-limit}
+\end{equation}
+so the rate for the unnormalised target is
+\[
+ \mathfrak r_{T,\delta}(G_N)
+ \asymp
+ N\sqrt{\frac{\log(1/\delta)}{T}}
+\]
+whenever \(N\) is in the regime where the uniform \(O(N)\) Lipschitz
+bound applies.
+\end{corollary}
+
+\begin{proof}
+With \(d=d_{T,\delta}\), the right side of
+\eqref{eq:lb-theta}--\eqref{eq:lb-vinfty} equals \(2\delta\), proving
+\eqref{eq:lb-radius-theta}--\eqref{eq:lb-radius-vinfty}.  Setting
+\(x=\log(2/\delta)\) in the upper bound of
+Section~\ref{sec:explicit-capped-gaussian}, and using
+\(\sqrt{u+v}\leq\sqrt u+\sqrt v\), gives
+\eqref{eq:lb-upper-radius}.  Finally,
+\[
+ \frac{A_N^\circ}{N}
+ =\operatorname{Var}(Y_0)
+ +2\sum_{h=1}^{N-1}
+ \left(1-\frac hN\right)\operatorname{Cov}(Y_0,Y_h)
+ \longrightarrow A_\infty^\circ
+\]
+by the geometric covariance bound.  On the compact parameter box, the
+covariances and their first parameter derivatives are uniformly summable,
+which gives the corresponding \(O(N)\) upper Lipschitz bound.
+\end{proof}
+
+\subsection{Persistence-sensitive lower bound}
+
+On the symmetric submodel \(p_1=p_2=p\), define
+\[
+ \omega_D(p)=\frac{e_D(p)}{\tau_D(p)},\qquad
+ \nu_D^2(p)=
+ \sum_{r=0}^{D-1}(2r+1)(1-p)^r-\tau_D(p)^2,
+\]
+\[
+ H_D(p)=\frac{\nu_D^2(p)}{\tau_D(p)},\qquad
+ v_\infty(a,p,p)=\sigma^2+a^2H_D(p),
+\]
+and
+\[
+ K_D^{\rm age}(p,q)
+ =
+ \log\frac{\tau_D(q)}{\tau_D(p)}
+ +\frac{c_D(p)}{\tau_D(p)}
+ \log\frac{1-p}{1-q}.
+\]
+All derivatives in the local bound below are explicit finite sums:
+\[
+ \tau_D'(p)=-\sum_{r=1}^{D-1}r(1-p)^{r-1},
+\]
+\[
+ \{\nu_D^2\}'(p)
+ =-\sum_{r=1}^{D-1}r(2r+1)(1-p)^{r-1}
+ -2\tau_D(p)\tau_D'(p),
+\]
+\[
+ H_D'(p)
+ =\frac{\{\nu_D^2\}'(p)\tau_D(p)
+ -\nu_D^2(p)\tau_D'(p)}{\tau_D(p)^2}.
+\]
+
+\begin{proposition}[Explicit persistence lower bound]
+\label{prop:lb-persistence}
+For interior \(p,q\in[p_-,p_+]\), every estimator satisfies
+\begin{align}
+ &\max_{\vartheta\in\{p,q\}}
+ P_{(a,\vartheta,\vartheta)}^{(T)}
+ \left\{
+ \left|\widehat v_{\infty,T}
+ -v_\infty(a,\vartheta,\vartheta)\right|
+ \geq
+ \frac{a^2}{2}|H_D(q)-H_D(p)|
+ \right\}
+ \nonumber\\
+ &\hspace{35mm}\geq
+ \frac14\exp\!\left[
+ -K_D^{\rm age}(p,q)
+ -(T-1)\omega_D(p)\operatorname{kl}(p\|q)
+ \right].
+ \label{eq:lb-persistence-finite}
+\end{align}
+If \(q_T=p+h/\sqrt T\) and \(H_D'(p)\neq0\), then
+\begin{align}
+ K_D^{\rm age}(p,q_T)
+ +(T-1)\omega_D(p)\operatorname{kl}(p\|q_T)
+ &\longrightarrow
+ \frac{h^2\omega_D(p)}{2p(1-p)},
+ \label{eq:lb-persistence-kl-limit}\\
+ \frac{\sqrt T}{2}
+ |v_\infty(a,q_T,q_T)-v_\infty(a,p,p)|
+ &\longrightarrow
+ \frac{a^2|H_D'(p)h|}{2}.
+ \label{eq:lb-persistence-target-limit}
+\end{align}
+Thus the local unavoidable scale is
+\begin{equation}
+ a^2|H_D'(p)|
+ \sqrt{\frac{p(1-p)}{T\omega_D(p)}}.
+ \label{eq:lb-persistence-scale}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Apply Lemma~\ref{lem:lb-complete-kl} to
+\((a,p,p)\) and \((a,q,q)\), and then apply the two-point testing inequality
+used in Theorem~\ref{thm:lb-two-point}.  Equations
+\eqref{eq:lb-persistence-kl-limit} and
+\eqref{eq:lb-persistence-target-limit} follow from the second-order
+expansion
+\[
+ \operatorname{kl}(p\|p+u)
+ =\frac{u^2}{2p(1-p)}+O(u^3)
+\]
+and first-order differentiation of \(H_D\).
+\end{proof}
+
+\subsection{Role of the exact local identification modulus}
+
+Let \(\mathcal I\) be the inverse map in \eqref{eq:cg-inverse}, let
+\(J_\theta=D\mathcal I(\Psi(\theta))\), and let
+\[
+ \Sigma_\Phi(\theta)
+ =
+ \sum_{k\in\mathbb Z}
+ \operatorname{Cov}_\theta\{
+ \phi(X_0,X_1,X_2),\phi(X_k,X_{k+1},X_{k+2})\}.
+\]
+
+\begin{proposition}[Plug-in fluctuation]
+\label{prop:lb-local-kappa}
+At an interior parameter, put
+\[
+ \lambda_\Phi(\theta)
+ :=\lambda_{\min}\{\Sigma_\Phi(\theta)\},
+\]
+and suppose that \(\lambda_\Phi(\theta)>0\).  The direct inverse estimator
+\(\widetilde\theta_T=\mathcal I(\widehat z_T)\), locally extended outside
+the range of \(\mathcal I\), satisfies
+\[
+ \sqrt T(\widetilde\theta_T-\theta)
+ \ \Longrightarrow\
+ N\{0,J_\theta\Sigma_\Phi(\theta)J_\theta^\top\}.
+\]
+Writing
+\[
+ K_{\rm id,cg}^{\rm loc}(\theta)
+ =\|J_\theta\|_{\infty\to2}
+ =\{\kappa_{\rm id,cg}^{\rm loc}(\theta)\}^{-1},
+\]
+for every \(c>0\),
+\begin{equation}
+ \liminf_{T\to\infty}
+ P_\theta\!\left\{
+ \sqrt T\|\widetilde\theta_T-\theta\|_2
+ \geq
+ cK_{\rm id,cg}^{\rm loc}(\theta)
+ \sqrt{\frac{\lambda_\Phi(\theta)}5}
+ \right\}
+ \geq2\Phi_{\rm N}(-c).
+ \label{eq:lb-local-kappa}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Geometric ergodicity and boundedness of \(\phi\) give the multivariate
+Markov-chain central limit theorem; the displayed weak limit follows by the
+delta method.  Since
+\[
+ \|J_\theta\|_{\infty\to2}
+ \leq\sqrt5\,\|J_\theta\|_{2\to2},
+\]
+\[
+ \lambda_{\max}\{
+ J_\theta\Sigma_\Phi(\theta)J_\theta^\top\}
+ \geq
+ \frac{\lambda_\Phi(\theta)}5
+ \{K_{\rm id,cg}^{\rm loc}(\theta)\}^2.
+\]
+Projection onto a maximizing eigenvector gives
+\eqref{eq:lb-local-kappa}.
+\end{proof}
+
+\begin{remark}[Scope of rate matching]
+\label{rem:lb-scope}
+Corollary~\ref{cor:lb-confidence} proves minimax-rate optimality in
+\(T\), \(\log(1/\delta)\), and \(N\) on a fixed interior box.
+Proposition~\ref{prop:lb-local-kappa} shows how the exact local inverse
+modulus enters the fluctuation of the specified moment plug-in estimator.
+It does not make the global factor
+\(K_{\rm id,cg}/\sqrt{\underline g_3}\) a sharp minimax constant.
+Indeed, rescaling the feature vector changes \(K_{\rm id,cg}\) while leaving
+the observation experiment unchanged; the invariant local object is
+\(J_\theta\Sigma_\Phi(\theta)J_\theta^\top\).  Likewise,
+\(\underline g_3\) is a certified uniform Doeblin lower bound, whereas
+\eqref{eq:lb-persistence-finite} is governed by the explicit local
+information coefficient
+\(\omega_D(p)/\{p(1-p)\}\).
+\end{remark}
+
+\subsection{Quantitative comparison with the closest minimax antecedents}
+\label{subsec:lb-exact-literature-map}
+
+\paragraph{Two-state HMM parameter bounds.}
+First consider the uncapped Markov benchmark \(D=\infty\), and write
+
+\[
+ Q=\begin{pmatrix}1-p&p\\q&1-q\end{pmatrix},\qquad
+ s=p+q,\qquad \lambda=1-s.
+\]
+For \(Y_t=2\mathbf 1_{\{S_t=2\}}-1\), stationarity gives
+\[
+ B(p,q):=\operatorname{Var}(Y_t)=\frac{4pq}{s^2},\qquad
+ \operatorname{Cov}(Y_t,Y_{t+h})=B(p,q)\lambda^h.
+\]
+Consequently,
+\begin{align}
+ v_\infty(p,q,a)
+ &=\sigma^2+a^2B(p,q)\frac{1+\lambda}{1-\lambda}
+ =\sigma^2+\frac{4a^2pq(2-p-q)}{(p+q)^3},
+ \label{eq:agn-map-vinfty}\\
+ G_N(p,q,a)
+ &=N\sigma^2+a^2B(p,q)F_N(\lambda),
+ \label{eq:agn-map-GN}
+\end{align}
+where
+\begin{align}
+ F_N(\lambda)
+ &=N+2\sum_{h=1}^{N-1}(N-h)\lambda^h
+ \nonumber\\
+ &=N\frac{1+\lambda}{1-\lambda}
+ -\frac{2\lambda(1-\lambda^N)}{(1-\lambda)^2},
+ \label{eq:agn-map-FN}\\
+ F_N'(\lambda)
+ &=\frac{2\{(N-1)-(N+1)\lambda
+ +(N+1)\lambda^N-(N-1)\lambda^{N+1}\}}
+ {(1-\lambda)^3}.
+ \label{eq:agn-map-FNprime}
+\end{align}
+
+The comparison with \cite{AbrahamGassiatNaulet2023} can be made literal,
+despite their finite-alphabet assumption, by applying their estimator to the
+observable coarsening \(U_t=\mathbf 1_{\{X_t>0\}}\).  The two Bernoulli
+emission vectors are
+\[
+ f_1=\{\Phi_{\rm N}(a/\sigma),\Phi_{\rm N}(-a/\sigma)\},\qquad
+ f_2=\{\Phi_{\rm N}(-a/\sigma),\Phi_{\rm N}(a/\sigma)\},
+\]
+so their emission-separation coordinate is
+\[
+ \phi_3=\|f_1-f_2\|_2
+ =\sqrt2\{2\Phi_{\rm N}(a/\sigma)-1\}.
+\]
+With their remaining coordinates
+\[
+ \phi_1=\frac{q-p}{p+q},\qquad \phi_2=1-p-q=\lambda,
+\]
+one has
+\[
+ a=a(\phi_3)
+ =\sigma\Phi_{\rm N}^{-1}
+ \left(\frac{1+\phi_3/\sqrt2}{2}\right),\qquad
+ a'(\phi_3)=\frac{\sigma}
+ {2\sqrt2\,\varphi_{\rm N}\{a(\phi_3)/\sigma\}},
+\]
+where \(\varphi_{\rm N}\) is the standard normal density.  Hence
+\begin{align}
+ v_\infty(\phi)
+ &=\sigma^2+a(\phi_3)^2(1-\phi_1^2)
+ \frac{1+\phi_2}{1-\phi_2},
+ \label{eq:agn-map-vphi}\\
+ G_N(\phi)
+ &=N\sigma^2+a(\phi_3)^2(1-\phi_1^2)F_N(\phi_2).
+ \label{eq:agn-map-Gphi}
+\end{align}
+The required delta map is therefore explicit:
+\begin{align}
+ \partial_{\phi_1}v_\infty
+ &=-2a^2\phi_1\frac{1+\phi_2}{1-\phi_2},
+ &
+ \partial_{\phi_2}v_\infty
+ &=\frac{2a^2(1-\phi_1^2)}{(1-\phi_2)^2},
+ \nonumber\\
+ \partial_{\phi_3}v_\infty
+ &=2aa'(\phi_3)(1-\phi_1^2)
+ \frac{1+\phi_2}{1-\phi_2},
+ \label{eq:agn-map-grad-v}\\
+ \partial_{\phi_1}G_N
+ &=-2a^2\phi_1F_N(\phi_2),
+ &
+ \partial_{\phi_2}G_N
+ &=a^2(1-\phi_1^2)F_N'(\phi_2),
+ \nonumber\\
+ \partial_{\phi_3}G_N
+ &=2aa'(\phi_3)(1-\phi_1^2)F_N(\phi_2).
+ \label{eq:agn-map-grad-G}
+\end{align}
+
+In the notation of \cite[Theorem~1]{AbrahamGassiatNaulet2023}, their
+transition and emission radii are, up to constants depending on the alphabet
+size and on their fixed spectral-gap margin \(L_{\rm A}\),
+\begin{equation}
+ r_Q(T,x)=
+ \frac{x(\delta_{\rm A}\vee\epsilon_{\rm A}\zeta_{\rm A})}
+ {\sqrt{T\delta_{\rm A}^2\epsilon_{\rm A}^4\zeta_{\rm A}^6}},
+ \qquad
+ r_f(T,x)=
+ \frac{x}
+ {\sqrt{T\delta_{\rm A}^2\epsilon_{\rm A}^4\zeta_{\rm A}^4}},
+ \label{eq:agn-raw-rates}
+\end{equation}
+with tail probability at most \(e^{-x^2}\).  On a fixed interior box,
+\(\delta_{\rm A},\epsilon_{\rm A},\zeta_{\rm A},L_{\rm A}\) are fixed and
+\(a'(\phi_3)\) is bounded.  Moreover, for
+\(|\phi_2|\leq\rho<1\), equations
+\eqref{eq:agn-map-FN}--\eqref{eq:agn-map-FNprime} give
+\[
+ \sup_{|\lambda|\leq\rho}|F_N(\lambda)|\leq C_\rho N,
+ \qquad
+ \sup_{|\lambda|\leq\rho}|F_N'(\lambda)|
+ \leq\frac{2N}{(1-\rho)^2}.
+\]
+The Jacobian of
+\((p,q,f_1,f_2)\mapsto(\phi_1,\phi_2,\phi_3)\) is bounded on this box, so
+\[
+ \|\widehat\phi-\phi\|_2
+ \leq C_{\Box}\{r_Q(T,x)+r_f(T,x)\}
+ \leq C_{\Box}\frac{x}{\sqrt T}.
+\]
+The mean-value theorem applied to
+\eqref{eq:agn-map-grad-v}--\eqref{eq:agn-map-grad-G} thus yields
+\begin{equation}
+ |\widehat v_\infty-v_\infty|
+ \leq C_{\Box}\frac{x}{\sqrt T},\qquad
+ |\widehat G_N-G_N|
+ \leq C_{\Box}N\frac{x}{\sqrt T}.
+ \label{eq:agn-delta-conclusion}
+\end{equation}
+Taking \(x=\sqrt{\log(1/\alpha)}\) reproduces exactly the powers of
+\(T\), \(N\), and \(\log(1/\alpha)\) in
+Corollary~\ref{cor:lb-confidence}.
+
+Thus the upper-rate statement on a fixed Markov interior box is a direct
+functional consequence of the AGN parameter bounds, after the displayed
+Bernoulli coarsening; there is no unbounded-gradient or nonlinear obstruction
+there.  A raw-parameter lower bound cannot be propagated in reverse by the
+delta method: a least-favourable parameter direction may be tangent to a level
+set of the functional.  Indeed,
+\(\partial_{\phi_1}v_\infty=0\) at \(p=q\).  Nevertheless, our amplitude
+pair has
+\[
+ \partial_av_\infty=2aA_\infty>0,
+ \qquad \partial_aG_N=2aA_N>0,
+\]
+and applying the same two-point functional principle on that regular direction
+gives \eqref{eq:lb-GN}--\eqref{eq:lb-vinfty}.  AGN's published lower
+theorem is not a formal lower bound for the Gaussian subfamily, because its
+least-favourable multinomial pairs need not lie on the Gaussian curve; our
+Gaussian KL calculation supplies that missing restriction.  This is a routine
+model-specific Le Cam application, not a new minimax rate.  Accordingly, the
+fixed-interior \(T^{-1/2}\) and \(NT^{-1/2}\) claims are not presented here as
+original consequences.  AGN state their minimax lower radius at fixed
+probability \(1/4\); the explicit \(\sqrt{\log(1/\alpha)}\) lower-confidence
+calibration in Corollary~\ref{cor:lb-confidence} comes from the
+Bretagnolle--Huber calculation above, not from a reverse delta argument.
+
+\begin{remark}[The AGN comparison on the small-transition front]
+\label{rem:agn-small-transition}
+AGN's Section~II identifies three routes to the i.i.d.\ boundary, the first
+being \(p\approx0\) or \(q\approx0\).  Their Theorem~1 and Corollary~1 give
+non-asymptotic bounds with explicit dependence on the lower margin
+\(\delta_{\rm A}\leq\min(p,q)\), so the small-transition front is covered by
+their published result
+\cite[Section~II, Theorem~1 and Corollary~1]{AbrahamGassiatNaulet2023}.
+
+The precise scope still requires their spectral-gap qualification.  They work
+on
+\[
+ \Theta_{L_{\rm A}}
+ =\Theta(\delta_{\rm A},\epsilon_{\rm A},\zeta_{\rm A})
+ \cap\{1-|1-p-q|\geq L_{\rm A}\},
+\]
+treat \(L_{\rm A}\) as fixed, and state in Remark~1 that this permits one of
+\(p,q\) to vanish, but not both.  For the joint symmetric path
+\(p=q=u\downarrow0\), membership requires \(L_{\rm A}\leq2u\); hence no single
+fixed-\(L_{\rm A}\) class contains the whole path.  The point
+\((u,u)\) is covered for every fixed \(u>0\) after choosing
+\(L_{\rm A}\leq2u\).  Their theorem statement suppresses the dependence of
+\(C(K,L_{\rm A})\), but their proof of Lemma~1 permits the explicit tracking
+carried out below.  AGN themselves state that accurate rates without a
+spectral-gap lower bound are beyond their scope and that tracking the gap with
+their method leaves an upper/lower mismatch by a factor
+\(\delta_{\rm A}\).
+The distinction is visible directly from
+\[
+ \operatorname{Cov}\{\mathbf 1_{\{S_0=2\}},\mathbf 1_{\{S_h=2\}}\}
+ =\frac{pq}{(p+q)^2}(1-p-q)^h.
+\]
+If \(p\downarrow0\) and \(q=q_0>0\), this covariance tends to zero; if
+\(p=q=u\downarrow0\), it tends to \(1/4\) for every fixed \(h\).  Thus the
+one-sided front approaches a one-component i.i.d.\ law, whereas simultaneous
+slow mixing does not.
+\end{remark}
+
+We now quantify that dependence.  Following
+\cite[proof of Lemma~1]{AbrahamGassiatNaulet2023}, set
+\begin{equation}
+ m_L=\left\lceil\frac{\log4}{L}\right\rceil+2,
+ \qquad
+ \gamma_L=\frac1{2m_L}.
+ \label{eq:agn-explicit-gap}
+\end{equation}
+Their length-three window chain has mixing time at most \(m_L\), and the
+pseudo-spectral-gap comparison used in their proof gives
+\(\gamma_{\rm ps}\geq\gamma_L\).  Solving their displayed Bernstein
+inequality coordinatewise and taking a union bound over the \(K^3\) cells
+gives the admissible explicit radius
+\begin{equation}
+ r_3(T,y;L)
+ \leq C_K\left\{
+ \sqrt{\frac{y}{T\gamma_L}}
+ +\frac{y}{T\gamma_L}
+ \right\},
+ \qquad
+ y=\log\frac{2K^3}{\alpha}.
+ \label{eq:agn-explicit-moment-radius}
+\end{equation}
+This is the dependence hidden in their fixed-\(L\) notation; it is an
+explicit admissible tracking of their proof, not a claim that their constants
+are optimal.
+
+Fix \(\epsilon_0,\zeta_0>0\), put
+\[
+ \delta_{\rm A}=u,\qquad
+ \epsilon_{\rm A}=\epsilon_0\leq|1-2u|,\qquad
+ \zeta_{\rm A}=\zeta_0,\qquad L_{\rm A}=2u,
+\]
+and assume \(u<\epsilon_0\zeta_0\).  The inverse factor in AGN's
+Theorem~1 is
+\[
+ \frac{\delta_{\rm A}\vee
+ \epsilon_{\rm A}\zeta_{\rm A}}
+ {\delta_{\rm A}\epsilon_{\rm A}^2\zeta_{\rm A}^3}
+ =\frac1{u\epsilon_0\zeta_0^2}.
+\]
+Moreover,
+\begin{equation}
+ \gamma_{2u}
+ =\frac1{2\{\lceil(\log4)/(2u)\rceil+2\}}
+ \asymp u.
+ \label{eq:agn-gap-symmetric}
+\end{equation}
+Substitution of \eqref{eq:agn-explicit-moment-radius} therefore yields the
+fully tracked AGN sufficient radius
+\begin{equation}
+ r_Q^{\rm AGN}(u,T,\alpha)
+ \leq C_{K,\epsilon_0,\zeta_0}
+ \left\{
+ \frac{\sqrt y}{u^{3/2}\sqrt T}
+ +\frac{y}{u^2T}
+ \right\}.
+ \label{eq:agn-u-raw-rate}
+\end{equation}
+Thus tracking \(L_{\rm A}=2u\) adds the factor \(u^{-1/2}\) which was hidden
+when \(C(K,L_{\rm A})\) was held fixed.
+
+This is not yet a rate for \(v_\infty\).  At \(p=q=u\),
+\begin{equation}
+ v_\infty(u,a)=\sigma^2+a^2\frac{1-u}{u},\qquad
+ \partial_pv_\infty=\partial_qv_\infty=-\frac{a^2}{2u^2},
+ \qquad
+ \frac{d}{du}v_\infty(u,a)=-\frac{a^2}{u^2}.
+ \label{eq:agn-u-gradient}
+\end{equation}
+Fixing \(a\) and applying the ordinary delta upper bound in the local regime
+\(r_Q^{\rm AGN}=o(u)\) therefore gives
+\begin{align}
+ r_{v,\rm delta}^{\rm AGN}
+ &\leq
+ \left(
+ |\partial_pv_\infty|+|\partial_qv_\infty|
+ \right)r_Q^{\rm AGN}
+ +O\{(r_Q^{\rm AGN})^2/u^3\}
+ \nonumber\\
+ &=O\left\{
+ a^2\left(
+ \frac{\sqrt y}{u^{7/2}\sqrt T}
+ +\frac{y}{u^4T}
+ \right)
+ \right\}.
+ \label{eq:agn-u-delta-rate}
+\end{align}
+For \(Nu\gg1\), the same calculation gives
+\(r_{G_N,\rm delta}^{\rm AGN}
+=O(Nr_{v,\rm delta}^{\rm AGN})\).
+The delta propagation adds another \(u^{-2}\).  The leading tracked AGN
+functional exponent is therefore \(u^{-7/2}\), whereas the local long-lag
+upper bound in Theorem~\ref{thm:persistence-local-upper} has exponent
+\(u^{-3/2}\).
+
+\begin{lemma}[Exact KL control on the symmetric boundary path]
+\label{lem:agn-symmetric-exact-kl}
+Let \(\overline P_u^{(T)}\) and \(P_u^{(T)}\) denote respectively the
+complete-data and observed-data laws in the symmetric Markov model
+\[
+ Q_u=\begin{pmatrix}1-u&u\\u&1-u\end{pmatrix},
+\]
+with stationary initialization and the same fixed Gaussian emissions under
+both alternatives.  If \(T\geq2\), \(0<u\leq1/4\), and \(0<d\leq u/2\), then
+\begin{align}
+ D_{\rm KL}\!\left(P_u^{(T)}\middle\|P_{u+d}^{(T)}\right)
+ &\leq
+ D_{\rm KL}\!\left(\overline P_u^{(T)}
+ \middle\|\overline P_{u+d}^{(T)}\right)
+ \nonumber\\
+ &=(T-1)\operatorname{kl}(u\|u+d)
+ \nonumber\\
+ &\leq
+ \frac{(T-1)d^2}{(u+d)(1-u-d)}
+ \leq\frac{8(T-1)d^2}{5u}.
+ \label{eq:agn-exact-complete-kl}
+\end{align}
+\end{lemma}
+
+\begin{proof}
+Put \(v=u+d\).  The stationary distribution is
+\(\pi_u=\pi_v=(1/2,1/2)\), and the conditional Gaussian laws are unchanged.
+The chain rule therefore gives the exact calculation
+\begin{align*}
+ D_{\rm KL}\!\left(\overline P_u^{(T)}
+ \middle\|\overline P_v^{(T)}\right)
+ &=D_{\rm KL}(\pi_u\|\pi_v)
+ +\sum_{t=1}^{T-1}
+ \mathbb E_u\!\left[
+ \log\frac{Q_u(S_t,S_{t+1})}{Q_v(S_t,S_{t+1})}
+ \right]
+ \nonumber\\
+ &\quad+
+ \sum_{t=1}^{T}
+ \mathbb E_u\!\left[
+ \log\frac{g_{S_t}(X_t)}{g_{S_t}(X_t)}
+ \right]
+ \\
+ &=(T-1)\left\{
+ u\log\frac{u}{v}
+ +(1-u)\log\frac{1-u}{1-v}
+ \right\}
+ \\
+ &=(T-1)\operatorname{kl}(u\|v).
+\end{align*}
+Indeed, under either transition row the switch indicator is
+\(\operatorname{Bern}(u)\).  Projection from the complete path onto the
+observations and the data-processing inequality give the first inequality in
+\eqref{eq:agn-exact-complete-kl}.  Finally,
+\[
+ \operatorname{kl}(u\|u+d)
+ \leq
+ \chi^2\{\operatorname{Bern}(u)\|
+ \operatorname{Bern}(u+d)\}
+ =\frac{d^2}{(u+d)(1-u-d)}.
+\]
+Since \(u+d\geq u\) and
+\(1-u-d\geq5/8\), the final inequality follows.
+\end{proof}
+
+The Fisher expansion is an interpretation of
+\eqref{eq:agn-exact-complete-kl}, not its justification.  If
+\(f_u(d)=\operatorname{kl}(u\|u+d)\), then
+\[
+ f_u(0)=f_u'(0)=0,\qquad
+ f_u''(0)=\frac1{u(1-u)},
+\]
+and Taylor's theorem gives, for \(0\leq d\leq u/2\),
+\begin{equation}
+ \operatorname{kl}(u\|u+d)
+ =\frac{d^2}{2u(1-u)}
+ +O\left(\frac{d^3}{u^2}\right).
+ \label{eq:agn-kl-taylor-domain}
+\end{equation}
+More explicitly,
+\[
+ f_u'''(d)
+ =-\frac{2u}{(u+d)^3}
+ +\frac{2(1-u)}{(1-u-d)^3},
+ \qquad
+ \sup_{0\leq d\leq u/2}|f_u'''(d)|\leq \frac{C}{u^2},
+\]
+so the ratio of the Taylor remainder to the quadratic term is
+\(O(d/u)\).  The quadratic approximation is therefore relatively accurate
+only when \(d/u\to0\).  At the Fisher scale
+\(d\asymp\sqrt{u(1-u)/T}\), this condition is \(Tu\to\infty\).
+The earlier working draft stated the resulting
+\(u^{-3/2}T^{-1/2}\) expression without this regime condition; that was an
+invalid extrapolation of the Taylor approximation and is corrected below.
+
+The lower bound itself can be made uniform without Taylor expansion.  Fix
+\(0<c_0\leq1/2\) and set
+\begin{equation}
+ d_{T,u}
+ =c_0\min\left\{
+ u,\sqrt{\frac{u(1-u)}{T-1}}
+ \right\}.
+ \label{eq:agn-boundary-perturbation}
+\end{equation}
+Lemma~\ref{lem:agn-symmetric-exact-kl} gives
+\[
+ D_{\rm KL}\!\left(P_u^{(T)}\middle\|
+ P_{u+d_{T,u}}^{(T)}\right)
+ \leq\frac85c_0^2
+ \min\{(T-1)u,1-u\}
+ \leq\frac85c_0^2.
+\]
+Moreover, the functional separation is exact:
+\[
+ |v_\infty(u+d_{T,u},a)-v_\infty(u,a)|
+ =\frac{a^2d_{T,u}}{u(u+d_{T,u})}.
+\]
+The two-point inequality therefore implies, for every estimator,
+\begin{align}
+ &\max_{\vartheta\in\{u,u+d_{T,u}\}}
+ P_\vartheta^{(T)}
+ \left\{
+ |\widehat v_{\infty,T}-v_\infty(\vartheta,a)|
+ \geq
+ \frac{a^2d_{T,u}}{2u(u+d_{T,u})}
+ \right\}
+ \nonumber\\
+ &\hspace{35mm}\geq
+ \frac14\exp\left(-\frac85c_0^2\right).
+ \label{eq:agn-boundary-two-regime-lb}
+\end{align}
+Since \(u+d_{T,u}\leq3u/2\), this construction yields the two-point
+lower-bound scale
+\begin{equation}
+ a^2\min\left\{
+ \frac1u,\,
+ \frac{\sqrt{1-u}}{u^{3/2}\sqrt{T-1}}
+ \right\}.
+ \label{eq:agn-persistence-gap}
+\end{equation}
+Thus \(a^2u^{-3/2}T^{-1/2}\) is the \(Tu\gg1\) branch.  When
+\(Tu=O(1)\), the legitimate boundary branch is \(a^2/u\), not an
+extrapolation of the Fisher formula.
+
+\begin{corollary}[Confidence-calibrated persistence lower radius]
+\label{cor:agn-boundary-confidence}
+Let \(0<\delta<1/4\),
+\(\ell_\delta=\log\{1/(4\delta)\}\), and
+\begin{equation}
+ d_{T,u,\delta}
+ =\min\left\{
+ \frac u2,
+ \sqrt{\frac{5u\ell_\delta}{8(T-1)}}
+ \right\}.
+ \label{eq:agn-confidence-perturbation}
+\end{equation}
+Then every estimator satisfies
+\begin{align}
+ &\max_{\vartheta\in\{u,u+d_{T,u,\delta}\}}
+ P_\vartheta^{(T)}
+ \left\{
+ |\widehat v_{\infty,T}-v_\infty(\vartheta,a)|
+ \geq
+ \frac{a^2d_{T,u,\delta}}
+ {2u(u+d_{T,u,\delta})}
+ \right\}
+ \geq\delta,
+ \label{eq:agn-confidence-lower}
+\end{align}
+and the threshold on the left is at least
+\begin{equation}
+ \frac{a^2}{6}
+ \min\left\{
+ \frac1u,
+ \frac{\sqrt{\ell_\delta}}
+ {u^{3/2}\sqrt{T-1}}
+ \right\}.
+ \label{eq:agn-confidence-lower-scale}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Equation~\eqref{eq:agn-exact-complete-kl} and
+\eqref{eq:agn-confidence-perturbation} give
+\[
+ D_{\rm KL}\!\left(P_u^{(T)}\middle\|
+ P_{u+d_{T,u,\delta}}^{(T)}\right)
+ \leq\ell_\delta.
+\]
+Bretagnolle--Huber therefore gives
+\((1/4)e^{-\ell_\delta}=\delta\).  Since
+\(u+d_{T,u,\delta}\leq3u/2\), the functional threshold is at least
+\(a^2d_{T,u,\delta}/(3u^2)\), which yields
+\eqref{eq:agn-confidence-lower-scale}.
+\end{proof}
+
+For \(u\leq1/6\), take \(u_\star=u\), \(\alpha=1\), and \(\beta=3/2\) in
+Theorem~\ref{thm:persistence-local-upper}; the lower pair in
+Corollary~\ref{cor:agn-boundary-confidence} lies in that same local cell.
+For fixed known \(a,\sigma\) with non-degenerate signal-to-noise ratio, the
+upper and lower radii have identical powers:
+\[
+ \begin{array}{c|c|c}
+ &\text{lower radius}&\text{upper radius}\\\hline
+ Tu\gg\log(1/\delta)
+ &a^2u^{-3/2}\sqrt{\log(1/\delta)/T}
+ &( |a|+\sigma)^2u^{-3/2}
+   \sqrt{\log(1/\delta)/T}\\
+ Tu=O\{\log(1/\delta)\}
+ &a^2u^{-1}&a^2u^{-1}
+ \end{array}
+\]
+Thus the persistent-path result is minimax-rate tight on a local cell known
+up to a fixed multiplicative factor.  The regular branch is a genuine
+statistical matching result.  The boundary branch is diameter saturation and
+does not imply consistent relative estimation.  This is a local minimax
+statement indexed by the prescribed scale \(u_\star\).  Since the estimator
+itself depends on \(u_\star\), it does not imply a single estimator attaining
+these radii uniformly over unknown persistence scales.  No global adaptive
+minimax claim is made.
+
+This calculation does not assume local asymptotic normality of the observed
+likelihood.  It uses an exact complete-data identity followed by data
+processing, so any singularity of the observed HMM can only make the observed
+KL smaller.  The price is possible looseness: a complete-data KL upper bound
+need not reveal the sharp observed-data geometry.  AGN's reparametrization and
+Proposition~2 are needed precisely to control that sharper marginal geometry
+near an i.i.d.\ boundary.  In their notation
+\(\phi_2=1-p-q\); Proposition~2 assumes \(|\phi_2|\) small, whereas on the
+symmetric slow-mixing path \(\phi_2=1-2u\to1\).  The two KL calculations
+therefore concern different degeneracies.
+
+Finally, \(d_{T,u}\downarrow0\) is a separation used to prove an impossibility
+result, not by itself an achievable estimation radius.  In the \(Tu\gg1\)
+branch its relative size is
+\[
+ \frac{d_{T,u}}u
+ \asymp\frac1{\sqrt{Tu}},
+\]
+which worsens as \(u\) decreases.  Omitting confidence and fixed
+signal-to-noise factors, the explicit comparison is
+\[
+ \begin{array}{c|c|c}
+ &\text{radius for }u&\text{radius for }v_\infty\\\hline
+ \text{AGN tracked uniform upper}
+ &u^{-3/2}T^{-1/2}&a^2u^{-7/2}T^{-1/2}\\
+ \text{long-lag local upper, }Tu\gg1
+ &u^{1/2}T^{-1/2}&a^2u^{-3/2}T^{-1/2}\\
+ \text{two-point local lower, }Tu\gg1
+ &u^{1/2}T^{-1/2}&a^2u^{-3/2}T^{-1/2}\\
+ \text{local boundary, }Tu=O(1)
+ &u&a^2u^{-1}
+ \end{array}
+\]
+The tracked AGN radius is looser by \(u^{-2}\) on the symmetric Gaussian
+submodel.  Their proof first estimates a fixed length-three law at the
+small-gap scale \((Tu)^{-1/2}\) and then applies an inverse bound of order
+\(u^{-1}\).  In contrast, the long-lag moment has the same
+\((Tu)^{-1/2}\) fluctuation but its inverse derivative is of order \(u\),
+giving \(\sqrt{u/T}\).  The discrepancy is therefore attributable to the
+fixed-block uniform AGN procedure and its broader parameter class, not to an
+inherent lower bound on the present local Gaussian subexperiment.
+
+Nor can \eqref{eq:agn-u-raw-rate} be extrapolated at fixed \(T\) all the way
+to \(u=0\): AGN's stated confidence range requires
+\(y\leq T u^2\epsilon_0^4\zeta_0^6\), and their theorem treats
+\(L_{\rm A}\) as fixed, while the symmetric path has \(L_{\rm A}=2u\).
+Theorem~\ref{thm:persistence-local-upper} supplies the matching observed-data
+upper bound for \eqref{eq:agn-persistence-gap} on a prescribed local
+multiplicative cell.  This comparison supplies no global adaptive theorem
+because the lag scale is fixed in advance.
+
+For comparison, the fixed-\(L_{\rm A}\) small-transition front covered
+directly by AGN may be represented by \(p=u\downarrow0\) and
+\(q=q_0>0\) fixed.  Then \(L_{\rm A}\) remains bounded away from zero and
+\[
+ v_\infty(p,q_0,a)-\sigma^2
+ =\frac{4a^2p q_0(2-p-q_0)}{(p+q_0)^3}
+ =\frac{4a^2(2-q_0)}{q_0^2}p+O(p^2).
+\]
+Here the functional derivative stays finite, so the AGN
+\(\delta_{\rm A}^{-1}T^{-1/2}\) raw radius propagates with the same
+\(\delta_{\rm A}^{-1}\) power.  This is distinct from sending both hazards
+to zero.
+
+Finally, for finite \(D\), Markovization produces \(2D\) latent age states
+with identical emission laws across the \(D\) ages of each regime.  AGN's
+two-state theorem does not apply to that augmented representation, and the
+repeated emission columns preclude treating it as an unrestricted identifiable
+\(2D\)-state HMM.
+
+\paragraph{Discounted Markov-cost variance.}
+To avoid the collision of notation with this article, write \(B\) for the
+total transition budget, \(H\) for the truncation horizon, and
+\(\rho\in[0,1)\) for the discount factor in
+\cite{ThoppePrashanthBhat2024}.  Their target and truncated return are
+\[
+ D_\rho=\sum_{t=0}^\infty\rho^tf(S_t),\qquad
+ D_{\rho,H}=\sum_{t=0}^{H-1}\rho^tf(S_t).
+\]
+Their reset access produces
+\(m=\lceil B/H\rceil\) independent copies of \(D_{\rho,H}\); states and
+costs are observed, and \(|f(s)|\leq K\).  In the published version,
+Theorem~4.12 states
+\begin{align}
+ \mathbb E|\widehat V_B-\operatorname{Var}(D_\rho)|
+ &\leq
+ \frac{8(1-\rho^H)^2K^2}{\sqrt m(1-\rho)^2}
+ +\frac{4\rho^HK^2}{(1-\rho)^2},
+ \label{eq:tpb-expectation}\\
+ \mathbb P\{|\widehat V_B-\operatorname{Var}(D_\rho)|>\varepsilon\}
+ &\leq
+ 2\exp\left[
+ -\frac{m(1-\rho)^4}{32(1-\rho^H)^4K^4}
+ \left\{\varepsilon-
+ \frac{4\rho^HK^2}{(1-\rho)^2}\right\}^2
+ \right]
+ \label{eq:tpb-tail}
+\end{align}
+for
+\(\varepsilon>4\rho^HK^2/(1-\rho)^2\).  Equivalently, its
+\((1-\alpha)\)-confidence radius is
+\begin{equation}
+ r_{\rm TPB}(B,H,\alpha)
+ =\frac{4\rho^HK^2}{(1-\rho)^2}
+ +\frac{\sqrt{32}(1-\rho^H)^2K^2}{(1-\rho)^2}
+ \sqrt{\frac{\log(2/\alpha)}m}.
+ \label{eq:tpb-radius}
+\end{equation}
+Thus Theorem~4.12 is an upper concentration result for an episodic sample
+variance, not a lower bound for a hidden single-trajectory experiment.
+
+The comparable horizon limit in our notation is \(N\to\infty\), not
+\(T\to\infty\): our \(T\) is data length, whereas their \(H\), denoted \(T\)
+in their paper, is an estimator truncation parameter.  If
+\(c_h=\operatorname{Cov}(X_0,X_h)\) and
+\(\sum_{h\geq0}|c_h|<\infty\), then
+\begin{align}
+ V_\rho
+ &:={\operatorname{Var}}\left(\sum_{t=0}^\infty\rho^tX_t\right)
+ =\frac{c_0+2\sum_{h=1}^\infty\rho^hc_h}{1-\rho^2},
+ \label{eq:tpb-abelian-exact}\\
+ (1-\rho^2)V_\rho&\longrightarrow v_\infty,
+ &
+ \frac{G_N}{N}&\longrightarrow v_\infty.
+ \label{eq:tpb-abelian-limit}
+\end{align}
+Hence, with the effective horizon
+\(N_\rho=(1-\rho^2)^{-1}\), one has the population equivalence
+\(V_\rho\sim G_{N_\rho}\).  This is the only direct convergence between
+the two formulations.
+
+Indeed, set \(h=1-\rho\) and normalize the discounted target as
+\(W_\rho=(1-\rho^2)V_\rho\).  Multiplying
+\eqref{eq:tpb-radius} by \(1-\rho^2\) gives
+\begin{align}
+ r_{W}(B,H,\alpha)
+ &=\frac{4\rho^HK^2(1+\rho)}h
+ \nonumber\\
+ &\quad+
+ \frac{\sqrt{32}(1-\rho^H)^2K^2(1+\rho)}h
+ \sqrt{\frac{\log(2/\alpha)}m}.
+ \label{eq:tpb-normalized-radius}
+\end{align}
+To make the first term at most \(\eta/2\), it is necessary that
+\begin{equation}
+ \rho^H\leq\frac{\eta h}{8K^2(1+\rho)},\qquad
+ H\geq
+ \frac{\log\{8K^2(1+\rho)/(\eta h)\}}{-\log\rho}
+ \sim\frac{\log(1/h)}h.
+ \label{eq:tpb-truncation-need}
+\end{equation}
+Once this truncation bias is controlled, the stochastic term in
+\eqref{eq:tpb-normalized-radius} requires
+\[
+ m\gtrsim
+ \frac{K^4}{\eta^2h^2}\log\frac2\alpha.
+\]
+Since \(B\asymp mH\), the resulting sufficient budget obeys
+\begin{equation}
+ B\gtrsim
+ \frac{K^4}{\eta^2h^3}
+ \log\frac2\alpha
+ \log\frac{K^2}{\eta h}.
+ \label{eq:tpb-singular-budget}
+\end{equation}
+Thus the normalized Theorem~4.12 bound is singular as
+\(\rho\uparrow1\) and does not converge to the
+\(\sqrt{\log(1/\alpha)/T}\) bound for \(v_\infty\).  The discrepancy
+survives the population normalization because TPB uses independent reset
+episodes, a generic bounded-cost sample-variance estimator, and an explicit
+truncation bias, whereas the present experiment consists of one stationary
+hidden trajectory with unbounded Gaussian emissions and an exact parametric
+functional.  Their general lower bound already establishes the root-sample
+barrier for variance risk; consequently that power is not new here either.
+The present result is therefore not merely a finite-horizon extension of
+Theorem~4.12.  Its distinct scope is the explicit functional separation for
+\(G_N\) and \(v_\infty\) in the stationary hidden capped-duration experiment.
+\subsection{Scope of the optimality claim}
+\label{subsec:optimality-scope}
+
+On the fixed interior classes, the upper and lower bounds match at the
+minimax-rate level; the global Doeblin and inversion constants are not claimed
+sharp.  Along the persistence path,
+Theorem~\ref{thm:persistence-local-upper} and
+Corollary~\ref{cor:agn-boundary-confidence} match powers cell by cell, but the
+lag uses the prescribed scale $u_\star$.  We do not prove adaptation over a
+union of unknown scales.  For unbounded durations controlled only through two
+moments, we make no uniform exponential claim; such a result would require
+stronger tail assumptions than are imposed here.
