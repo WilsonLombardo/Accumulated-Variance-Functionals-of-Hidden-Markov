@@ -17,4 +17,4 @@ The repository includes Python scripts to audit the constants and reproduce the 
 * **Numerical Output**: The complete numerical output from the simulations is stored in two versioned CSV files located in the `Paper` directory[cite: 1].
 
 ## Reference
-If you use this code or find this work helpful, please refer to the main preprint file included in this repository: `Preprint.pdf`[cite: 1].
+If you use this code or find this work helpful, please refer to the main preprint file included in this repository: `Paper/Preprint.pdf`[cite: 1].
