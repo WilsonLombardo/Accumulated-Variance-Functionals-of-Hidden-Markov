@@ -1,0 +1,16 @@
+1| Monte Carlo audit of the persistent-path result
+2| ================================================
+3| Empirical long-lag RMSE slope: -1.551304
+4| Delta-predicted long-lag slope: -1.497268
+5| Empirical lag-1 RMSE slope: -2.494803
+6| Empirical linearized lag-1 slope: -2.006888
+7| Delta-predicted lag-1 slope: -2.008107
+8| Long-lag empirical/exact moment-SD range: [0.9987, 1.0189]
+9| Lag-1 empirical/exact moment-SD range: [0.9834, 1.0115]
+10| Long-lag RMSE/delta-SD range: [1.0512, 1.1389]
+11| Lag-1 RMSE/delta-SD range: [1.0405, 2.0074]
+12| Minimum max two-point failure probability at the theoretical half-separation: 0.4777 (required >= 0.05).
+13| Maximum exact complete-KL/ell ratio: 0.312767
+14| Minimum exact Bretagnolle-Huber probability: 0.151121
+15| The confidence perturbation switches branch at Tu/ell = 2.5 exactly.
+16| 
