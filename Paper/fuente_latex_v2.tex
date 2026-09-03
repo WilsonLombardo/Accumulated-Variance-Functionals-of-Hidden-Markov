@@ -1,0 +1,1205 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=27mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{assumption}[theorem]{Assumption}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\E}{\mathbb E}
+\newcommand{\Pp}{\mathbb P}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\cL}{\mathcal L}
+\newcommand{\cM}{\mathcal M}
+\newcommand{\R}{\mathbb R}
+
+\title{Accumulated-Variance Functionals of Hidden Markov and\\
+Semi-Markov Processes: Finite-Sample Upper and Lower Bounds}
+\author{Wilson Lombardo}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study two accumulated variance functionals for stationary two-state hidden
+Markov or hidden semi-Markov process, observed through a single trajectory,
+and separate identifying these observable quantities from recovering the
+latent parameters behind them.  For bounded durations, inverting block
+moments gives finite-sample upper bounds, worked out with fully explicit
+constants for a capped-geometric Gaussian family; on fixed interior classes,
+the corresponding two-point lower bounds have the same rate.  On prescribed
+local persistence cells a long-lag estimator matches the regular and saturated
+regimes---though only cell by cell, with a lag built around
+the cell's own scale, not through any single estimator that adapts across
+unknown scales.  Unbounded durations known only through two moments are a
+separate matter: no uniform exponential bound is claimed there either.
+\end{abstract}
+
+\medskip
+\noindent\textbf{Keywords:} accumulated variance; hidden Markov process;
+hidden semi-Markov process; finite-sample concentration; minimax lower bound;
+persistence.
+
+\medskip
+\noindent\textbf{2020 Mathematics Subject Classification:}
+Primary 60K15; Secondary 60J10, 60E15, 62M05, 62M10.
+
+\section{Introduction}
+
+This paper concerns inference for two observable probability functionals from
+one stationary trajectory: the variance accumulated over a finite prediction
+horizon and its long-run per-unit-time limit.  The data length and prediction
+horizon are kept separate throughout.  This distinction is essential because
+estimation error is determined by the former, whereas the sensitivity of the
+target may grow with the latter.
+
+The first structural point is that identification of the target functional is
+strictly weaker than identification of a latent parametrization.  We therefore
+derive deterministic stability inequalities directly in observable moment
+coordinates before propagating error through a latent inverse.  The resulting
+bounds remain meaningful at some parameter configurations where full latent
+recovery is unavailable, provided that the accumulated-variance functional is
+still identified.
+
+The two-state Markov model serves as a benchmark: its geometric covariance
+structure exposes the finite-horizon sensitivity and permits a transparent
+three-moment estimator.  The central semi-Markov result treats bounded
+durations through residual-time Markovization and block-moment inversion.  In
+the capped-geometric Gaussian family, the observable inverse, a uniform
+identification margin, and a pseudo-spectral-gap lower bound are all calculated
+explicitly rather than left as abstract regularity constants.
+
+The comparison splits in two.  On fixed interior classes, a Bernstein bound
+for observable moments and a two-point lower bound have the same powers of
+data length, confidence level, and prediction horizon.  Along the symmetric
+persistent path, a lag tied to the persistence time attains the corresponding
+lower-bound powers on either side of saturation---but only cell by cell, with
+the cell scale fixed in advance; we do not construct an estimator adaptive to
+an unknown persistence scale.
+
+The computational procedures are included to show that the theoretical
+quantities are evaluable and to audit constants, indices, and saturation
+thresholds.  They are not the basis of the contribution.  The paper also
+records why two duration moments alone cannot support a uniform exponential
+claim for unbounded sojourn laws.
+
+\section{Observation experiment and estimands}
+
+Let $S_t\in\{1,2\}$ be stationary and let the observations be conditionally
+independent given the latent path, with state-dependent emission laws $Q_i$ and
+\[
+ \E(X_t\mid S_t=i)=\mu_i,
+ \qquad \Var(X_t\mid S_t=i)=\sigma_i^2.
+\]
+Only $X_{1:T}=(X_1,\ldots,X_T)$ is observed.  To avoid a rate ambiguity, $T$
+always denotes the data length and $N$ the horizon of the target
+\[
+ G_N(\theta):=\Var_\theta\!\left(\sum_{t=1}^N X_t\right),
+ \qquad
+ v_\infty(\theta):=\lim_{N\to\infty}N^{-1}G_N(\theta),
+\]
+whenever the latter limit exists.  The exact expression for $G_N(\theta)$ is
+taken from Lemma~1 of the population analysis and is not rederived here.
+
+For the two-state alternating semi-Markov model, complete sojourns
+$D_i\sim F_i$ have probability mass $f_i$, mean $\tau_i$, and variance
+$\nu_i^2$.  Consecutive sojourns are mutually independent.  The stationary
+occupation probabilities and inclusive residual-life laws are
+\begin{equation}
+ \pi_i=\frac{\tau_i}{\tau_1+\tau_2},
+ \qquad
+ \Pp(R_i=r\mid S_1=i)=\frac{\Pp(D_i\ge r)}{\tau_i},\quad r\ge1.
+ \label{eq:equilibrium}
+\end{equation}
+The relevant aperiodicity condition is the span-one condition on a complete
+return cycle,
+\begin{equation}
+ \gcd\{d_1+d_2:f_1(d_1)f_2(d_2)>0\}=1.
+ \label{eq:aperiodicity}
+\end{equation}
+Separate span-one assumptions on $F_1$ and $F_2$ are not equivalent to
+\eqref{eq:aperiodicity} and are not, by themselves, sufficient.
+
+\section{Identification}
+
+\begin{definition}[Latent and functional identification]
+Let $P_\theta^{(\ell)}=\cL_\theta(X_{1:\ell})$.  A latent parameter is
+identified from $\ell$ observations, up to state permutation, when
+\[
+ P_\theta^{(\ell)}=P_{\theta'}^{(\ell)}
+ \quad\Longrightarrow\quad
+ \theta'=s\theta
+\]
+for a permutation $s$ of the two state labels.  A scalar functional $g$ is
+identified when the weaker implication
+$P_\theta^{(\ell)}=P_{\theta'}^{(\ell)}\Rightarrow
+g(\theta)=g(\theta')$ holds.
+\end{definition}
+
+\begin{proposition}[The target is more identifiable than the latent model]
+If $\E_\theta X_t^2<\infty$, then $G_N$ is identified by
+$P_\theta^{(N)}$, irrespective of whether the latent parametrization is
+identified.  If $\sum_{h\in\mathbb Z}|\Cov(X_0,X_h)|<\infty$, then
+$v_\infty$ is identified by the full stationary observed law.  In general,
+no fixed finite block identifies $v_\infty$ without structural or covariance
+tail restrictions.
+\end{proposition}
+
+\begin{proof}
+The first assertion follows from
+\[
+ G_N=\int\!\left(\sum_{t=1}^N x_t\right)^2dP^{(N)}
+ -\left\{\int\!\sum_{t=1}^N x_t\,dP^{(N)}\right\}^2.
+\]
+The second follows from
+$v_\infty=\gamma_0+2\sum_{h\ge1}\gamma_h$, where every fixed-lag
+covariance is a moment of the observed law.  A finite block contains no
+information about unrestricted covariances beyond its length.
+\end{proof}
+
+\subsection{Markov submodel}
+
+Let
+\[
+ P=\begin{pmatrix}1-a&a\\ b&1-b\end{pmatrix},
+ \qquad \lambda=1-a-b.
+\]
+For a known number of states, a full-rank transition matrix
+($\lambda\ne0$) and linearly independent emission laws, the nonparametric
+two-state HMM is identified from the law of three consecutive observations,
+up to label permutation \cite{GassiatCleynenRobin2016}.  For two probability
+measures, distinctness implies linear independence; hence $\mu_1\ne\mu_2$
+is sufficient, although not necessary, because it implies $Q_1\ne Q_2$.
+The convention $\mu_1<\mu_2$ fixes the label.
+
+The assumptions are substantive.  If $Q_1=Q_2$, latent dynamics are
+invisible.  If $\lambda=0$, the latent states are independent over time and
+the observations reduce to an ordinary mixture; an unrestricted
+nonparametric mixture decomposition need not be identified.  Conversely,
+$\mu_1=\mu_2$ does not alone destroy identification if $Q_1\ne Q_2$, but it
+does remove the state signal from ordinary autocovariances of $X_t$.
+
+\subsection{Semi-Markov model}
+
+We assume that the embedded chain alternates, so that successive sojourns are
+in different states.  If embedded self-transitions are allowed, a single
+calendar-time run in state $i$ can be split into an arbitrary number of
+consecutive sojourns, and $F_i$ is not identified even if the complete latent
+path $S$ were observed.
+
+The Markov identification theorem cannot simply be transferred to an HSMM.
+With duration bounds $D_i^{\max}<\infty$, the augmented state
+$E_t=(S_t,R_t)$ is a finite Markov chain, but all augmented states sharing
+the same value of $S_t$ also share the same emission law.  Thus the emission
+family in the expanded HMM contains repeated measures and violates the
+linear-independence hypothesis of the preceding theorem.  A dedicated
+injectivity argument is required.
+
+Moreover, an arbitrary infinite-support $F_i$ is not identified by any fixed
+finite block.  For a block of length $\ell$, probability mass can be
+redistributed among at least three duration points greater than $\ell$ while
+preserving total tail mass and its first moment.  This leaves all latent block
+probabilities of length $\ell$ unchanged, but can change the second duration
+moment.  Consequently, from $P_\theta^{(\ell)}$ alone one cannot generally
+identify $F_i$ or even $\nu_i^2$.  Autocovariances alone are weaker still and
+need not separate $F_1$ from $F_2$.
+
+For finite-sample HSMM inference we therefore impose one of the following
+verifiable model restrictions:
+\begin{enumerate}
+ \item $F_i$ belongs to a fixed finite-dimensional family
+       $F_i(\cdot;\eta_i)$ and a finite observed-block moment map is
+injective up to labels; or
+ \item $F_i$ has known finite support and the structured HSMM likelihood is
+       injective up to labels; or
+ \item a sieve $F_i^{(D)}$ is used and its truncation bias is explicitly
+       retained.
+\end{enumerate}
+We write the quantitative local form of this requirement as
+\begin{equation}
+ \inf_{\vartheta\in U(\theta_0)}
+ s_{\min}\{D M_H(\vartheta)\}\ge\kappa_{\rm id}>0,
+ \label{eq:idmargin}
+\end{equation}
+where $M_H(\theta)$ is the selected vector of observable moments.  This is
+an assumption to be verified for the chosen duration and emission families,
+not a consequence of $\mu_1\ne\mu_2$ alone.
+
+There is nevertheless a useful constructive sufficient condition.  Assume
+that the two-component marginal mixture is identifiable within the selected
+emission class:
+\begin{equation}
+ \pi_1G_1+\pi_2G_2=\pi_1'G_1'+\pi_2'G_2'
+ \quad\Longrightarrow\quad
+ (\pi_i',G_i')_{i=1}^2=(\pi_{s(i)},G_{s(i)})_{i=1}^2
+ \label{eq:mixtureid}
+\end{equation}
+for some label permutation $s$.  This holds, for example, for many regular
+finite-dimensional mixture families, but not for unrestricted probability
+measures.
+
+\begin{proposition}[Constructive HSMM identification under mixture
+identifiability]
+Assume \eqref{eq:mixtureid}, $G_1\ne G_2$, finite mean durations, stationary
+initialization, and strict alternation.  Then the complete observed law
+identifies $(G_1,G_2,F_1,F_2)$ up to label permutation.  If
+$\operatorname{supp}(F_i)\subseteq\{1,\ldots,D\}$, the block law of length
+$D+2$ is sufficient, though not necessarily minimal.
+\end{proposition}
+
+\begin{proof}
+The marginal law identifies $(\pi_i,G_i)$ by \eqref{eq:mixtureid}.  Since two
+distinct probability measures are linearly independent, their $m$-fold
+tensor products are linearly independent; hence the mixture decomposition of
+$\cL(X_{1:m})$ identifies every latent word probability
+$\Pp(S_{1:m}=s)$.  Stationarity and alternation give
+\[
+ c:=\Pp(S_0=1,S_1=2)=\Pp(S_0=2,S_1=1)
+   =\frac1{\tau_1+\tau_2},
+ \qquad \tau_i=\frac{\pi_i}{c}.
+\]
+For $j\ne i$ and $d\ge1$,
+\[
+ f_i(d)=\frac{
+ \Pp(S_0=j,S_1=\cdots=S_d=i,S_{d+1}=j)}{c}.
+\]
+All duration masses are therefore recovered from the complete law; a support
+bound $D$ makes blocks through length $D+2$ sufficient.
+\end{proof}
+
+\begin{corollary}[Gaussian emission specialization]
+If $G_i=\mathcal N(\mu_i,\sigma_i^2)$, $\pi_i\in(0,1)$, and
+$(\mu_1,\sigma_1^2)\ne(\mu_2,\sigma_2^2)$, finite Gaussian-mixture
+identifiability \cite{Teicher1963} verifies \eqref{eq:mixtureid}.  Hence the
+complete observed law identifies
+\[
+ (\mu_i,\sigma_i^2,F_i,\tau_i,\nu_i^2)_{i=1}^2
+\]
+up to labels whenever the displayed duration moments exist.  Under
+$\operatorname{supp}(F_i)\subseteq\{1,\ldots,D\}$, the block law through
+length $D+2$ identifies the same tuple.  The restriction $\mu_1<\mu_2$
+fixes labels when the means are separated; if the means coincide but the
+variances differ, another deterministic labeling convention is required.
+\end{corollary}
+
+The separation condition $\mu_1\ne\mu_2$ alone is not a replacement for
+\eqref{eq:mixtureid}.  At the i.i.d. latent boundary, different decompositions
+of the same one-dimensional mixture can yield different emission and
+geometric run-length parameters while producing the same i.i.d. observed
+process.  Thus neither separated means nor nondegenerate sojourn laws suffice
+on an unrestricted emission class.  If $G_1=G_2$, all latent dynamics are
+invisible.
+
+\section{Estimators}
+
+\subsection{A model-free benchmark}
+
+Let $\widehat\gamma_h$ be an empirical autocovariance.  For fixed $N<T$,
+\begin{equation}
+ \widehat G_N^{\rm dir}
+ =N\widehat\gamma_0+2\sum_{h=1}^{N-1}(N-h)\widehat\gamma_h
+ \label{eq:direct}
+\end{equation}
+estimates $G_N$ without identifying any latent parameter.  Deterministically,
+\begin{equation}
+ |\widehat G_N^{\rm dir}-G_N|
+ \le N^2\max_{0\le h<N}|\widehat\gamma_h-\gamma_h|.
+ \label{eq:directerror}
+\end{equation}
+This is an essential baseline, but its use of $N$ lags makes it inefficient
+when $N$ grows with $T$.  For the long-run target we use the positive
+semi-definite Bartlett HAC estimator of Newey and West
+\cite{NeweyWest1987}, not the rectangularly truncated covariance sum.  With
+$Y_t=X_t-\bar X_T$ and
+\[
+ \widetilde\gamma_h=T^{-1}\sum_{t=1}^{T-h}Y_tY_{t+h},
+ \qquad
+ w_{h,H}=1-\frac{h}{H+1},
+\]
+define
+\begin{equation}
+ \widehat v_H^{\rm B}
+ =\widetilde\gamma_0+
+ 2\sum_{h=1}^{H}w_{h,H}\widetilde\gamma_h.
+ \label{eq:bartlett-hac}
+\end{equation}
+Extending $Y_t$ by zero outside $\{1,\ldots,T\}$ gives the exact identity
+\begin{equation}
+ \widehat v_H^{\rm B}
+ =\frac{1}{T(H+1)}
+   \sum_{j=1}^{T+H}\left(\sum_{r=0}^{H}Y_{j-r}\right)^2\geq0.
+ \label{eq:bartlett-psd}
+\end{equation}
+Thus the scalar estimator is nonnegative in every sample.  In contrast,
+rectangular weights $w_h=1$ do not define a positive-semidefinite lag window
+and can produce a negative estimate of a variance.  The stochastic error in
+\eqref{eq:bartlett-hac} is of order $H$ times the maximal covariance error,
+plus the covariance-tail and Bartlett-window biases.
+
+Autocovariances alone do not generally identify the full HSMM tuple.  In
+particular, $\gamma_0$ contains only the weighted combination
+$\pi_1\sigma_1^2+\pi_2\sigma_2^2$, finitely many lags cannot identify an
+infinite duration tail, and the scale $(\mu_1-\mu_2)^2$ can be confounded with
+the latent indicator covariance.  A covariance-based GMM therefore requires
+injectivity of its chosen finite-dimensional moment map; higher-order moments
+or likelihood information may be necessary.
+
+\subsection{A stable three-moment estimator for the Markov submodel}
+
+Put
+\[
+ A=\pi_1\pi_2(\mu_1-\mu_2)^2,
+ \qquad B=\pi_1\sigma_1^2+\pi_2\sigma_2^2.
+\]
+Then
+\[
+ \gamma_0=A+B,\qquad \gamma_h=A\lambda^h\quad(h\ge1).
+\]
+Fix $\rho<1$ and define
+\[
+ \mathcal Z_\rho=\{(A,B,\lambda):A,B\ge0,\ |\lambda|\le\rho\},
+ \qquad M(A,B,\lambda)=(A+B,A\lambda,A\lambda^2).
+\]
+Rather than form the unstable ratio $\widehat\gamma_2/\widehat\gamma_1$,
+let
+\begin{equation}
+ \widehat\zeta\in\arg\min_{\zeta\in\mathcal Z_\rho}
+ \|M(\zeta)-(\widehat\gamma_0,\widehat\gamma_1,
+ \widehat\gamma_2)\|_\infty,
+ \qquad \widehat G_N^{\rm M}=G_N(\widehat\zeta).
+ \label{eq:mdmarkov}
+\end{equation}
+
+\begin{theorem}[Functional stability without a signal lower bound]
+\label{thm:functional-stability}
+Suppose $\zeta,\zeta'\in\mathcal Z_\rho$ and set
+$e_j=|M_j(\zeta')-M_j(\zeta)|$.  Define
+\[
+ S_{0,N}(\rho)=\sum_{k=0}^{N-2}(N-1-k)\rho^k,
+\]
+\[
+ S_{1,N}(\rho)=\sum_{k=1}^{N-2}k(N-1-k)\rho^{k-1}.
+\]
+For $0\le \rho<1$ these coefficients contain no unresolved summation:
+\begin{align}
+ S_{0,N}(\rho)
+ &=\frac{(N-1)-N\rho+\rho^N}{(1-\rho)^2},
+ \label{eq:S0closed}\\
+ S_{1,N}(\rho)
+ &=\frac{(N-2)-N\rho+N\rho^{N-1}-(N-2)\rho^N}
+         {(1-\rho)^3}.
+ \label{eq:S1closed}
+\end{align}
+Then
+\begin{align}
+ |G_N(\zeta')-G_N(\zeta)|
+ \le{}&Ne_0+2S_{0,N}(\rho)e_1
+       +2S_{1,N}(\rho)(\rho e_1+e_2),
+ \label{eq:stableGN}\\
+ |v_\infty(\zeta')-v_\infty(\zeta)|
+ \le{}&e_0+\frac{2e_1}{1-\rho}
+       +\frac{2(\rho e_1+e_2)}{(1-\rho)^2}.
+ \label{eq:stablevinf}
+\end{align}
+In particular, no lower bound on $A$ or $|\lambda|$ is required.
+\end{theorem}
+
+\begin{proof}
+Write $u=A\lambda=\gamma_1$ and $v=A\lambda^2=\gamma_2$.  For $k\ge1$,
+\[
+ |u\lambda^k-u'{\lambda'}^k|
+ \le \rho^k e_1+k\rho^{k-1}(\rho e_1+e_2),
+\]
+because
+$|u'(\lambda-\lambda')|
+\le\rho|u-u'|+|u\lambda-u'\lambda'|$.
+Insert this inequality into
+$G_N=N\gamma_0+2\sum_{k=0}^{N-2}(N-1-k)u\lambda^k$.
+Letting $N\to\infty$ after normalization gives
+\eqref{eq:stablevinf}; equivalently, sum the two geometric series.
+\end{proof}
+
+The theorem is deliberately functional-specific.  When $A=0$ or
+$\lambda=0$, the latent decomposition is singular but every positive-lag
+covariance vanishes, so the target remains stable.  This avoids an artificial
+factor $1/|\gamma_1|$ introduced by ratio inversion.
+
+\subsection{HSMM minimum distance and likelihood}
+
+For a parametric or finite-support HSMM let
+\[
+ \widehat M_H=(\widehat m_1,\ldots,\widehat m_d),
+ \qquad M_H(\theta)=\E_\theta\widehat M_H,
+\]
+where the moments may include marginal moments, autocovariances, and, when
+needed for identification, third-order lagged moments.  Define
+\begin{equation}
+ \widehat\theta_{\rm MD}\in
+ \arg\min_{\vartheta\in\Theta}
+ \|W^{1/2}\{\widehat M_H-M_H(\vartheta)\}\|_2^2,
+ \quad
+ \widehat G_N=G_N(\widehat\theta_{\rm MD}),
+ \quad
+ \widehat v_\infty=v_\infty(\widehat\theta_{\rm MD}).
+ \label{eq:mdhsmm}
+\end{equation}
+The exact $G_N(\widehat\theta)$ is evaluated by the coefficient-extraction or
+renewal recursion of Lemma~1.
+
+An alternative is the stationary HSMM maximum-likelihood estimator.  For
+bounded durations, augment by residual time $E_t=(i,r)$.  Its transition
+matrix has
+\[
+ Q_F((i,r),(i,r-1))=1\quad(r>1),
+ \qquad
+ Q_F((i,1),(3-i,d))=f_{3-i}(d),
+\]
+and stationary initial law
+\begin{equation}
+ \alpha_{i,r}=\Pp(S_1=i,R_i=r)
+ =\frac{\Pp(D_i\ge r)}{\tau_1+\tau_2}.
+ \label{eq:auginitial}
+\end{equation}
+Thus the first segment must be treated as left-censored through the
+equilibrium residual law; the final segment is right-censored.  Standard
+forward--backward recursions provide posterior state and segment counts.  The
+Gaussian-emission M-step is a posterior-weighted update of $\mu_i$ and
+$\sigma_i^2$, while duration probabilities are updated from posterior segment
+counts with boundary censoring included in the likelihood.
+
+For theory, $\widehat\theta$ should mean a global constrained likelihood or
+minimum-distance minimizer.  EM is a numerical method for locating such a
+point; without an initialization-basin argument it does not itself supply a
+finite-sample guarantee.
+
+\section{Non-asymptotic propagation}
+\label{sec:nonasymptotic-propagation}
+
+\begin{theorem}[Coordinatewise non-asymptotic delta method]
+\label{thm:propagation}
+Let $g:\Theta\to\R$ be continuously differentiable on a convex neighborhood
+$U$ containing $\theta$ and $\widehat\theta$ on an event $E$.  Put
+\[
+ L_j=\sup_{\vartheta\in U}|\partial_jg(\vartheta)|.
+\]
+If
+\[
+ \Pp(|\widehat\theta_j-\theta_j|>t)
+ \le\delta_j(t,T),
+\]
+then
+\begin{equation}
+ \Pp(|g(\widehat\theta)-g(\theta)|>\epsilon)
+ \le \Pp(E^c)+
+ \inf_{\substack{t_j>0\\\sum_jL_jt_j\le\epsilon}}
+ \sum_j\delta_j(t_j,T).
+ \label{eq:uniondelta}
+\end{equation}
+If, for all $x>0$, simultaneously with probability at least $1-2de^{-x}$,
+\[
+ |\widehat\theta_j-\theta_j|
+ \le a_j\sqrt{x/T_{\rm eff}}+b_jx/T_{\rm eff},
+\]
+then on $E$
+\begin{equation}
+ |g(\widehat\theta)-g(\theta)|
+ \le\sum_jL_j
+ \left(a_j\sqrt{x/T_{\rm eff}}+b_jx/T_{\rm eff}\right).
+ \label{eq:bernprop}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+On the intersection of the coordinate events, the multivariate mean-value
+formula gives
+$|g(\widehat\theta)-g(\theta)|\le\sum_jL_jt_j$.
+The union bound proves \eqref{eq:uniondelta}; substituting the displayed
+Bernstein radii proves \eqref{eq:bernprop}.
+\end{proof}
+
+\subsection{Observable-moment concentration and the Markov corollary}
+
+The concentration step can be made explicit by Markovizing the semi-Markov
+process.  Put $Z_t=(S_t,R_t,X_t)$ and, for a maximum lag $H$, put
+$W_t^{(H)}=(Z_t,\ldots,Z_{t+H})$.  Under bounded duration support,
+$Z=(Z_t)$ and each window process $W^{(H)}$ are stationary Markov chains.
+Let $g_H>0$ denote the pseudo-spectral gap of $W^{(H)}$ (or any certified lower
+bound for it).  This formulation is useful because the lag product is the
+bounded additive functional
+\[
+ f_h(W_t^{(H)})=(X_t-m_X)(X_{t+h}-m_X),
+ \qquad m_X=\E X_t.
+\]
+Thus concentration of empirical autocovariances is an application of an
+existing Markov-chain additive-functional inequality, rather than a new
+semi-Markov concentration principle.
+
+The applications below use the corrected author version of
+Paulin~\cite[Assumption~3.1 and Theorem~3.11, equation~(3.25)]{Paulin2015}.
+Accordingly, each window chain is assumed time-homogeneous,
+$\phi$-irreducible, and aperiodic on a Polish state space, with a unique
+stationary law; the equilibrium initialization makes the observed window
+stationary.  For a bounded measurable $f$ with $|f|\le K$, one has
+$V_f:=\Var_\pi(f)\le K^2$ and $|f-\pi f|\le2K$.  Solving Paulin's quadratic exponent for
+the empirical-average deviation gives, for $m\ge1$, $g>0$, $K>0$, and $y>0$,
+\begin{equation}
+ {\mathfrak b}_{\rm P}(m,g,K,y)
+ =\frac{K}{mg}\left[
+ 20y+\sqrt{400y^2+8yg\{m+g^{-1}\}}
+ \right],
+ \label{eq:bradius}
+\end{equation}
+and hence
+\[
+ \Pp_\pi\!\left\{
+ \left|m^{-1}\sum_{t=1}^m f(W_t)-\pi f\right|
+ >{\mathfrak b}_{\rm P}(m,g,K,y)
+ \right\}\le2e^{-y}.
+\]
+No unspecified Bernstein constant remains in this radius.
+
+\begin{proposition}[Empirical autocovariances from a finite-support HSMM]
+\label{prop:autocov-concentration}
+Assume $|X_t-m_X|\le R$ almost surely and $T>H$.  Define the common-sample
+autocovariances
+\[
+ \widetilde\gamma_h
+ =\frac1{T-H}\sum_{t=1}^{T-H}
+ (X_t-m_X)(X_{t+h}-m_X),\qquad 0\le h\le H,
+\]
+and let $\widehat\gamma_h$ replace $m_X$ by
+$\overline X_T=T^{-1}\sum_{t=1}^T X_t$.  Set
+\begin{align}
+ b_\mu(x)&={\mathfrak b}_{\rm P}(T,g_0,R,x+\log4),\\
+ b_{\gamma,H}(x)
+ &={\mathfrak b}_{\rm P}(T-H,g_H,R^2,x+\log\{2(H+1)\}),\\
+ r_{T,H}(x)&=b_{\gamma,H}(x)+2R b_\mu(x)+b_\mu(x)^2.
+ \label{eq:moment-radius}
+\end{align}
+Then, for every $x>0$,
+\begin{equation}
+ \Pp\!\left\{
+ \max_{0\le h\le H}|\widehat\gamma_h-\gamma_h|
+ >r_{T,H}(x)\right\}\le4e^{-x}.
+ \label{eq:momentbernstein}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+For each $h$, apply the chosen bounded additive-functional Bernstein
+inequality to $f_h(W_t^{(H)})$ and take a union bound over $h=0,\ldots,H$.
+This gives the term $b_{\gamma,H}(x)$.  Apply the same inequality to
+$X_t-m_X$ to obtain
+$|\overline X_T-m_X|\le b_\mu(x)$.  Finally, with
+$d=\overline X_T-m_X$ and $Y_t=X_t-m_X$,
+\[
+ |(Y_t-d)(Y_{t+h}-d)-Y_tY_{t+h}|
+ \le 2R|d|+d^2.
+\]
+A second union bound proves \eqref{eq:momentbernstein}.
+\end{proof}
+
+For Gaussian or other sub-Gaussian emissions, one may instead apply the
+unbounded-function renewal inequality of
+\cite{Adamczak2008,AdamczakBednorz2015} to the sub-exponential products, or
+use clipped observations and add the analytically controlled clipping bias.
+Finite emission variance by itself is not sufficient for
+\eqref{eq:momentbernstein}.
+
+\begin{corollary}[Direct finite-horizon HSMM variance bound]
+\label{cor:direct-hsmm-bound}
+Let $H=N-1<T$ and define $\widehat G_N^{\rm dir}$ by
+\eqref{eq:direct}, using the common-sample autocovariances of
+Proposition~\ref{prop:autocov-concentration}.  Then
+\begin{equation}
+ \Pp\!\left\{
+ |\widehat G_N^{\rm dir}-G_N|>
+ N^2r_{T,N-1}(x)\right\}\le4e^{-x}.
+ \label{eq:direct-hsmm-probability}
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+On the event in Proposition~\ref{prop:autocov-concentration},
+\[
+ |\widehat G_N^{\rm dir}-G_N|
+ \le
+ \left\{N+2\sum_{h=1}^{N-1}(N-h)\right\}r_{T,N-1}(x)
+ =N^2r_{T,N-1}(x).
+\]
+\end{proof}
+
+\begin{corollary}[Finite-sample Markov functional bound]
+\label{cor:markov-bound}
+Let $r_T(x)=r_{T,2}(x)$ denote the radius in
+\eqref{eq:moment-radius}.
+For the estimator \eqref{eq:mdmarkov}, with the convention that any minimizer
+may be selected,
+\begin{equation}
+ \Pp\{ |\widehat G_N^{\rm M}-G_N|>
+ 2L_N^{\rm mom}(\rho)r_T(x)\}
+ \le 4e^{-x},
+ \label{eq:markovbound}
+\end{equation}
+where
+\[
+ L_N^{\rm mom}(\rho)=
+ N+2S_{0,N}(\rho)+2(1+\rho)S_{1,N}(\rho).
+\]
+The analogous bound for $v_\infty$ replaces this constant by
+\[
+ L_\infty^{\rm mom}(\rho)=
+ 1+\frac2{1-\rho}+\frac{2(1+\rho)}{(1-\rho)^2}.
+\]
+\end{corollary}
+
+\begin{proof}
+The true moment vector is feasible, so minimum-distance optimality and the
+triangle inequality give
+$\|M(\widehat\zeta)-M(\zeta)\|_\infty\le2r_T(x)$.
+Apply Theorem~\ref{thm:functional-stability} coordinatewise.
+\end{proof}
+
+Equivalently, the requested $\epsilon$--$\delta$ form is the computable bound
+\begin{equation}
+\begin{aligned}
+ \Pp\{|\widehat G_N^{\rm M}-G_N|>\epsilon\}
+ &\le \delta_{N,T}^{\rm M}(\epsilon),\\
+ \delta_{N,T}^{\rm M}(\epsilon)
+ &=
+ \min\!\left[
+ 1,\,
+ 4\exp\!\left\{
+ -\sup\left\{x>0:
+ 2L_N^{\rm mom}(\rho)r_{T,2}(x)\le\epsilon
+ \right\}\right\}\right].
+\end{aligned}
+ \label{eq:markov-epsilon-delta}
+\end{equation}
+The right-hand side is one-dimensional and monotone, so it is evaluated
+without simulation; throughout these inverse-radius formulas
+$\sup\varnothing$ is defined as $0$, yielding the trivial bound $1$ when
+$\epsilon$ is below the smallest certified radius.
+
+For fixed $\rho<1$, $L_N^{\rm mom}(\rho)=O(N)$ and
+$L_\infty^{\rm mom}(\rho)=O(1)$.  Consequently,
+\[
+ \widehat v_\infty-v_\infty=O_{\Pp}(T^{-1/2}),
+ \qquad
+ \widehat G_N-G_N=O_{\Pp}(N T^{-1/2}),
+\]
+under fixed mixing constants.  If $N=T$, the absolute error is therefore
+$O_{\Pp}(\sqrt T)$, while the normalized error remains $O_{\Pp}(T^{-1/2})$.
+An $O(T^{-1/2})$ claim for the \emph{absolute} error of $G_T$ would have the
+wrong scale.
+
+There are two distinct ill-conditioned boundaries.  As $|\lambda|\uparrow1$,
+mixing slows, with an effective size of order $T(1-|\lambda|)$, and the
+functional sensitivity contributes factors of order $(1-\lambda)^{-2}$ for
+positive persistence.  A conservative moment argument gives
+\[
+ |\widehat v_\infty-v_\infty|
+ =O_{\Pp}\{T^{-1/2}(1-\lambda)^{-5/2}\}.
+\]
+As $\lambda\to0$, by contrast, the full latent model approaches its
+non-identifiable i.i.d. boundary.  Parameter recovery deteriorates, but the
+functional-specific estimator above need not, because the serial covariance
+itself vanishes.
+
+\subsection{A concrete end-to-end HSMM theorem}
+
+Fix a duration bound $D$ and a compact parameter class $\Theta_D$ of
+stationary, strictly alternating, two-state HSMMs with
+$\operatorname{supp}(F_i)\subseteq\{1,\ldots,D\}$.  Fix labels, for example by
+$\mu_1<\mu_2$, and exclude zero duration masses required for irreducibility.
+Let $\ell\ge D+2$ and choose a finite vector of bounded block features
+\[
+ \Phi=(\phi_1,\ldots,\phi_d):\R^\ell\longrightarrow[-1,1]^d,
+ \qquad
+ \Psi(\theta)=\E_\theta\{\Phi(X_{1:\ell})\}.
+\]
+From one trajectory, set $m=T-\ell+1$ and
+\begin{equation}
+ \widehat\Psi_T=\frac1m\sum_{t=1}^{m}\Phi(X_{t:t+\ell-1}),
+ \qquad
+ \widehat\theta_T\in\arg\min_{\vartheta\in\Theta_D}
+ \|\widehat\Psi_T-\Psi(\vartheta)\|_\infty .
+ \label{eq:blockmd}
+\end{equation}
+This is a fully specified global minimum-distance estimator; unlike EM, its
+definition does not depend on a local numerical optimum.
+
+For any estimand $g:\Theta_D\to\R$, define its observable identification
+modulus
+\begin{equation}
+ \omega_{g,\Theta_D}(u)=
+ \sup\{|g(\theta)-g(\vartheta)|:
+ \theta,\vartheta\in\Theta_D,\ 
+ \|\Psi(\theta)-\Psi(\vartheta)\|_\infty\le u\}.
+ \label{eq:functionalmodulus}
+\end{equation}
+This quantity is finite by compactness and is numerically certifiable by
+finite-dimensional global optimization.  It also records the correct
+impossibility statement: if $\omega_{g,\Theta_D}(u)$ does not tend to zero as
+$u\downarrow0$, then the functional is not uniformly identifiable from the
+selected moments.
+
+\begin{theorem}[End-to-end block-moment bound for a bounded-duration HSMM]
+\label{thm:hsmm-end-to-end}
+Assume that the stationary augmented window chain of length $\ell$ has
+pseudo-spectral gap at least $\underline g_\ell>0$ uniformly on $\Theta_D$.
+For $x>0$, let
+\begin{equation}
+ a_{T,\ell,d}(x)=
+ {\mathfrak b}_{\rm P}\!\left(
+ T-\ell+1,\underline g_\ell,1,x+\log(2d)\right).
+ \label{eq:blockradius}
+\end{equation}
+Then, simultaneously for $g=G_N$ and $g=v_\infty$,
+\begin{equation}
+ \Pp_{\theta_0}\!\left[
+ |g(\widehat\theta_T)-g(\theta_0)|
+ >
+ \omega_{g,\Theta_D}\{2a_{T,\ell,d}(x)\}
+ \right]\le 2e^{-x}.
+ \label{eq:hsmm-modulus-bound}
+\end{equation}
+If, whenever $\|\Psi(\theta)-\Psi(\vartheta)\|_\infty\le r_0$,
+\begin{equation}
+ \|\theta-\vartheta\|_2
+ \le\kappa_{\rm id}^{-1}
+ \|\Psi(\theta)-\Psi(\vartheta)\|_\infty
+ \label{eq:global-inverse-margin}
+\end{equation}
+and $g$ is $L_g$-Lipschitz on $\Theta_D$, then, provided
+$2a_{T,\ell,d}(x)\le r_0$,
+\begin{equation}
+ \Pp_{\theta_0}\!\left\{
+ |g(\widehat\theta_T)-g(\theta_0)|
+ >2L_g\kappa_{\rm id}^{-1}a_{T,\ell,d}(x)
+ \right\}\le2e^{-x}.
+ \label{eq:hsmmparamrate}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Each coordinate of $\widehat\Psi_T$ is a bounded additive functional of the
+length-$\ell$ augmented window chain.  The Bernstein inequality used in
+\eqref{eq:bradius}, followed by a union bound over $d$ coordinates, gives
+\[
+ \|\widehat\Psi_T-\Psi(\theta_0)\|_\infty
+ \le a_{T,\ell,d}(x)
+\]
+outside an event of probability at most $2e^{-x}$.  Since $\theta_0$ is
+feasible in \eqref{eq:blockmd}, minimum-distance optimality and the triangle
+inequality imply
+\[
+ \|\Psi(\widehat\theta_T)-\Psi(\theta_0)\|_\infty
+ \le2a_{T,\ell,d}(x).
+\]
+The definition \eqref{eq:functionalmodulus} proves
+\eqref{eq:hsmm-modulus-bound}.  Under
+\eqref{eq:global-inverse-margin}, the preceding display gives
+$\|\widehat\theta_T-\theta_0\|_2
+\le2\kappa_{\rm id}^{-1}a_{T,\ell,d}(x)$; Lipschitz continuity of $g$
+then proves \eqref{eq:hsmmparamrate}.
+\end{proof}
+
+In the same notation, Theorem~\ref{thm:hsmm-end-to-end} is exactly
+\begin{equation}
+ \Pp_{\theta_0}\{|g(\widehat\theta_T)-g(\theta_0)|>\epsilon\}
+ \le\delta_{g,T}^{\rm HSMM}(\epsilon),
+ \label{eq:hsmm-epsilon-delta}
+\end{equation}
+where
+\[
+ \delta_{g,T}^{\rm HSMM}(\epsilon)=
+ \min\!\left[
+ 1,\,
+ 2\exp\!\left\{
+ -\sup\left\{x>0:
+ \omega_{g,\Theta_D}\{2a_{T,\ell,d}(x)\}\le\epsilon
+ \right\}\right\}\right].
+\]
+Under \eqref{eq:global-inverse-margin}, one may replace the modulus inside
+the supremum by
+$2L_g\kappa_{\rm id}^{-1}a_{T,\ell,d}(x)$.
+
+The theorem gives the requested deterministic observable-moment step as the
+pathwise implication
+\begin{equation}
+ |g(\widehat\theta_T)-g(\theta_0)|
+ \le
+ \omega_{g,\Theta_D}\!\left(
+ 2\|\widehat\Psi_T-\Psi(\theta_0)\|_\infty\right),
+ \label{eq:observable-deterministic}
+\end{equation}
+not merely as a proposed future calculation.
+
+For Gaussian emissions a concrete bounded choice is a finite collection of
+Fourier cylinder features
+\[
+ \phi_{u,c}(x_{1:\ell})=\cos(u^\top x_{1:\ell}),\qquad
+ \phi_{u,s}(x_{1:\ell})=\sin(u^\top x_{1:\ell}).
+\]
+On a compact class with separated component parameters, the frequency grid
+must be selected so that $\Psi$ is injective and
+\eqref{eq:global-inverse-margin} is certified.  The latter can be audited by
+a quantitative inverse-function argument using both a lower bound on the
+smallest singular value of $D\Psi$ and a Lipschitz bound for $D\Psi$ inside
+local neighborhoods, together with a global separation check outside those
+neighborhoods.  A singular-value bound alone is not a global inverse theorem.
+This audit is essential: mean separation alone does not imply a uniform
+$\kappa_{\rm id}>0$.
+
+For finite duration support, the augmented transition matrix should also
+satisfy a quantitative geometric-ergodicity bound
+\begin{equation}
+ \|(Q_F-\Pi_F)^h\|\le C_{\rm mix}\rho_F^h,
+ \qquad \rho_F<1,
+ \label{eq:augmix}
+\end{equation}
+uniformly over the parameter class; it yields a computable lower bound for
+$\underline g_\ell$.  Aperiodicity alone is qualitative and does not provide
+a uniform constant in \eqref{eq:augmix}.
+
+\input{step1_explicit_identification_mixing_fragment_v2.tex}
+
+For reference, the previously derived alternating-renewal expression
+\begin{equation}
+ v_\infty=
+ \frac{\tau_1\sigma_1^2+\tau_2\sigma_2^2}{T_c}
+ +(\mu_1-\mu_2)^2
+ \frac{\tau_2^2\nu_1^2+\tau_1^2\nu_2^2}{T_c^3},
+ \qquad T_c=\tau_1+\tau_2,
+ \label{eq:vinfhsmm}
+\end{equation}
+has fully explicit sensitivities.  With $\Delta=\mu_1-\mu_2$ and
+$A_c=\tau_2^2\nu_1^2+\tau_1^2\nu_2^2$,
+\begin{align*}
+ \partial_{\mu_1}v_\infty&=2\Delta A_c/T_c^3,&
+ \partial_{\mu_2}v_\infty&=-2\Delta A_c/T_c^3,\\
+ \partial_{\sigma_i^2}v_\infty&=\pi_i,&
+ \partial_{\nu_1^2}v_\infty&=\Delta^2\tau_2^2/T_c^3,\\
+ \partial_{\nu_2^2}v_\infty&=\Delta^2\tau_1^2/T_c^3,&
+ \partial_{\tau_1}v_\infty
+ &=\frac{\tau_2(\sigma_1^2-\sigma_2^2)}{T_c^2}
+ +\Delta^2\left(\frac{2\tau_1\nu_2^2}{T_c^3}
+ -\frac{3A_c}{T_c^4}\right),\\
+ \partial_{\tau_2}v_\infty
+ &=\frac{\tau_1(\sigma_2^2-\sigma_1^2)}{T_c^2}
+ +\Delta^2\left(\frac{2\tau_2\nu_1^2}{T_c^3}
+ -\frac{3A_c}{T_c^4}\right).
+\end{align*}
+These derivatives may be inserted directly into
+\eqref{eq:uniondelta}.
+
+\input{step2_matching_upper_bound_fragment_v2.tex}
+
+\input{step2_optimality_lower_bound_fragment_v2.tex}
+
+\input{numerical_validation_fragment_v2.tex}
+
+Even with observed states, the number of complete cycles is approximately
+$T/T_c$; duration parameters therefore have a baseline error scale
+$\sqrt{T_c/T}$, before dimension and hidden-state separation are included.
+The mean cycle length alone is not a mixing constant: residual-life tails,
+minimum duration probabilities, and the gap of $Q_F$ also matter.
+
+If $F_i$ is arbitrary with only finite mean and variance, an exponential
+Bernstein bound cannot hold uniformly.  Exponential or bounded duration tails
+are sufficient routes to geometric mixing.  Under polynomial tails one must
+use regenerative/Fuk--Nagaev-type bounds, and estimating $\nu_i^2$ at a
+root-number-of-cycles rate generally requires a fourth duration moment.
+Likewise, finite emission variance alone is insufficient for exponential
+concentration of empirical second moments.
+
+\section{Prior-art map and scope of the contribution}
+
+The following distinctions are important.
+\begin{enumerate}
+ \item Nonparametric HMM identification under full-rank transitions and
+       linearly independent emissions is established in
+       \cite{GassiatCleynenRobin2016}.  Spectral/moment algorithms with
+       finite-sample guarantees are established for identifiable HMM classes
+       in \cite{HsuKakadeZhang2012,AnandkumarHsuKakade2012}; nonparametric
+       oracle/minimax inequalities appear in
+       \cite{DeCastroGassiatLacour2016,AbrahamGassiatNaulet2023,AbrahamGassiatNaulet2025}.
+ \item Bernstein, empirical-process, and regenerative inequalities for
+       additive functionals of geometrically ergodic Markov chains are already
+       available in
+       \cite{Adamczak2008,AdamczakBednorz2015,BertailClemencon2010,Paulin2015}.
+       The inequality actually used here is
+       Paulin~\cite[Theorem~3.11, equation~(3.25), corrected author
+       version]{Paulin2015}: it treats a stationary, not necessarily reversible
+       chain satisfying Assumption~3.1 on a Polish state space, a bounded
+       $L^2(\pi)$ summand, and a positive pseudo-spectral gap.  Its
+       Proposition~3.4, equation~(3.9), converts uniform-ergodicity mixing time
+       into the pseudo-spectral-gap lower bound used in the non-asymptotic and
+       explicit capped-duration sections.  Since a
+       bounded-duration HSMM becomes Markov after residual-time augmentation,
+       and a lag product becomes additive after window augmentation,
+       concentration of empirical autocovariances is covered at this generic
+       level.
+ \item Merlev\`ede, Peligrad and Rio
+       \cite[Theorem~2]{MerlevedePeligradRio2009} give the corresponding
+       strong-mixing antecedent for centered, uniformly bounded variables with
+       $\alpha(k)\le e^{-2ck}$; stationarity is not required.  Their denominator
+       contains the covariance proxy $mv^2$, a boundedness term, and a linear
+       term multiplied by $(\log m)^2$.  This result is not used to justify the
+       log-free Paulin radius above.
+ \item Finite-sample error bounds for empirical autocovariance operators under
+       strong mixing are available from Mollenhauer et
+       al.\ \cite{MollenhauerEtAl2022}; their direct insertion into a HAC
+       estimator is therefore background rather than a novelty claim.
+ \item For observed Markov-chain functionals, non-asymptotic long-run-variance
+       estimation predates this work: Gyori and Paulin
+       \cite{GyoriPaulin2012} analyze a truncated autocovariance estimator.
+       We therefore make no general first-estimator claim.
+ \item Melnyk and Banerjee's spectral algorithm
+       \cite{MelnykBanerjee2017} handles discrete HSMMs with bounded duration
+       and full-rank conditions, but from a set of independent training
+       sequences and with the aim of scoring a test sequence---a different
+       statistical experiment and target from the present one, which starts
+       from one trajectory and targets $G_N$ or $v_\infty$ directly.
+ \item Barbu and Limnios \cite{BarbuLimnios2006} and Trevezas and Limnios
+       \cite{TrevezasLimnios2010} prove consistency and asymptotic normality of
+       HSMM maximum-likelihood estimators.  Farcomeni
+       \cite{Farcomeni2025} derives exact score and information recursions.
+       These are important computational and asymptotic antecedents, but not
+       end-to-end high-probability functional bounds.
+ \item Khorshidian et al.\ \cite{KhorshidianEtAl2016} prove strong consistency
+       and asymptotic normality for moments of semi-Markov reward processes,
+       but from an observed semi-Markov kernel---the hidden-state
+       identification problem from emissions, which is our starting point,
+       does not arise in their setting.
+ \item Posterior concentration for semi-Markov kernels in Votsi et
+       al.\ \cite{VotsiEtAl2021} concerns observed histories; hidden emissions
+       and accumulated variance are outside that experiment.
+ \item De Castro, Gassiat and Le Corff
+       \cite{DeCastroGassiatLeCorff2017} study filtering and smoothing in a
+       nonparametric \emph{HMM}; this paper is not an HSMM parameter-estimation
+       theorem.
+\end{enumerate}
+
+We do not rely on a joint result by Douc, Moulines, and Rio, and no such
+citation is retained.  The concentration step for the Markov component is
+instead based on Paulin~\cite[Theorem~3.11]{Paulin2015}, with its state-space,
+stationarity, boundedness, and pseudo-spectral-gap hypotheses stated in
+Section~\ref{sec:nonasymptotic-propagation}.  Where the strong-mixing route is discussed, Merlev\`ede, Peligrad
+and Rio~\cite[Theorem~2]{MerlevedePeligradRio2009} are cited only for that
+statement.  Neither reference is used to claim a concentration theorem for
+the present hidden semi-Markov functional; the functional bounds are proved
+under the assumptions stated in their respective theorems.
+
+Theorem~\ref{thm:hsmm-end-to-end} gives the generic composition for the stated
+block-moment estimator.  Section~\ref{sec:explicit-capped-gaussian} makes this
+composition quantitative:
+for a named capped-geometric Gaussian family it gives an exact observable
+inverse, a closed uniform $\underline\kappa_{\rm id,cg}$, a closed uniform
+$\underline g_3$, and an end-to-end radius with Paulin's numerical constants.
+The restriction to antipodal means and known common variance is explicit; the
+result does not silently claim the four-free-emission-parameter model.
+
+A matching lower bound and the sensitivity calculation for $G_N$ and
+$v_\infty$ are given in Section~\ref{sec:minimax-lower-bound}.  On fixed
+interior HMM classes, the root-data-length parameter rates are already covered
+by Abraham, Gassiat and Naulet; propagation to the present smooth functionals
+is not claimed as a new generic rate.  The upper and lower functional powers
+match in $T$, $\log(1/\delta)$, and $N$ on the stated fixed interior box, but
+the uniform Doeblin and global inverse constants are not claimed to be sharp.
+On the symmetric persistent Markov path with fixed known emission
+parameters, the long-lag estimator of
+Section~\ref{sec:persistence-upper-bound} matches the two-point lower bound in
+both the regular and saturated regimes on a local multiplicative cell.
+The precise restrictions on this comparison are collected in
+Section~\ref{subsec:optimality-scope}.
+
+\section*{AI tool disclosure}
+
+OpenAI Codex (GPT-5 family, accessed through the Codex desktop application,
+most recently on 28 August 2026) assisted with mathematical exposition,
+bibliographic discovery, code generation, and manuscript editing.  The author
+retains full responsibility for the mathematical statements, citations,
+computations, and accompanying code.
+
+\begin{thebibliography}{99}
+
+\bibitem{NeweyWest1987}
+W.~K. Newey and K.~D. West (1987).
+A simple, positive semi-definite, heteroskedasticity and autocorrelation
+consistent covariance matrix.
+\emph{Econometrica} \textbf{55}(3), 703--708.
+\url{https://doi.org/10.2307/1913610}.
+
+\bibitem{Teicher1963}
+H.~Teicher (1963).
+Identifiability of finite mixtures.
+\emph{The Annals of Mathematical Statistics} \textbf{34}(4), 1265--1269.
+\url{https://doi.org/10.1214/aoms/1177703862}.
+
+\bibitem{GassiatCleynenRobin2016}
+E.~Gassiat, A.~Cleynen and S.~Robin (2016).
+Finite state space non parametric hidden Markov models are in general
+identifiable.
+\emph{Statistics and Computing} \textbf{26}, 61--71.
+\url{https://doi.org/10.1007/s11222-014-9523-8}.
+
+\bibitem{HsuKakadeZhang2012}
+D.~Hsu, S.~M. Kakade and T.~Zhang (2012).
+A spectral algorithm for learning hidden Markov models.
+\emph{Journal of Computer and System Sciences} \textbf{78}, 1460--1480.
+\url{https://doi.org/10.1016/j.jcss.2011.12.025}.
+
+\bibitem{AnandkumarHsuKakade2012}
+A.~Anandkumar, D.~Hsu and S.~M. Kakade (2012).
+A method of moments for mixture models and hidden Markov models.
+\emph{Proceedings of COLT}, PMLR \textbf{23}, 33.1--33.34.
+\url{https://proceedings.mlr.press/v23/anandkumar12.html}.
+
+\bibitem{DeCastroGassiatLacour2016}
+Y.~De Castro, E.~Gassiat and C.~Lacour (2016).
+Minimax adaptive estimation of nonparametric hidden Markov models.
+\emph{Journal of Machine Learning Research} \textbf{17}(111), 1--43.
+\url{https://jmlr.org/papers/v17/15-381.html}.
+
+\bibitem{AbrahamGassiatNaulet2023}
+K.~Abraham, E.~Gassiat and Z.~Naulet (2023).
+Fundamental limits for learning hidden Markov model parameters.
+\emph{IEEE Transactions on Information Theory} \textbf{69}(3), 1777--1794.
+\url{https://doi.org/10.1109/TIT.2022.3213429}.
+
+\bibitem{BretagnolleHuber1978}
+J.~Bretagnolle and C.~Huber (1978).
+Estimation des densit\'es: risque minimax.
+\emph{S\'eminaire de probabilit\'es} \textbf{12}, 342--363.
+\url{https://www.numdam.org/item/SPS_1978__12__342_0/}.
+
+\bibitem{WolferKontorovich2019}
+G.~Wolfer and A.~Kontorovich (2019).
+Minimax learning of ergodic Markov chains.
+\emph{Proceedings of Machine Learning Research} \textbf{98}, 904--930.
+\url{https://proceedings.mlr.press/v98/wolfer19a.html}.
+
+\bibitem{ThoppePrashanthBhat2024}
+G.~Thoppe, L.~A. Prashanth and S.~P. Bhat (2024).
+Risk estimation in a Markov cost process: lower and upper bounds.
+\emph{Proceedings of Machine Learning Research} \textbf{235}, 48124--48138.
+\url{https://proceedings.mlr.press/v235/thoppe24a.html}.
+
+\bibitem{AbrahamGassiatNaulet2025}
+K.~Abraham, E.~Gassiat and Z.~Naulet (2025).
+Frontiers to the learning of nonparametric hidden Markov models.
+\emph{Journal of Machine Learning Research} \textbf{26}(155), 1--75.
+\url{https://www.jmlr.org/papers/v26/24-2230.html}.
+
+\bibitem{Paulin2015}
+D.~Paulin (2015).
+Concentration inequalities for Markov chains by Marton couplings and
+spectral methods.
+\emph{Electronic Journal of Probability} \textbf{20}(79), 1--32.
+\url{https://doi.org/10.1214/EJP.v20-4039}.
+The general-state-space applications in this paper use the corrected author
+version v5 at \url{https://arxiv.org/abs/1212.2015}.
+
+\bibitem{Adamczak2008}
+R.~Adamczak (2008).
+A tail inequality for suprema of unbounded empirical processes with
+applications to Markov chains.
+\emph{Electronic Journal of Probability} \textbf{13}, 1000--1034.
+\url{https://doi.org/10.1214/EJP.v13-521}.
+
+\bibitem{AdamczakBednorz2015}
+R.~Adamczak and W.~Bednorz (2015).
+Exponential concentration inequalities for additive functionals of Markov
+chains.
+\emph{ESAIM: Probability and Statistics} \textbf{19}, 440--481.
+\url{https://doi.org/10.1051/ps/2014032}.
+
+\bibitem{BertailClemencon2010}
+P.~Bertail and S.~Cl\'emen\c{c}on (2010).
+Sharp bounds for the tails of functionals of Markov chains.
+\emph{Theory of Probability and Its Applications} \textbf{54}, 505--515.
+\url{https://doi.org/10.1137/S0040585X97984401}.
+
+\bibitem{MerlevedePeligradRio2009}
+F.~Merlev\`ede, M.~Peligrad and E.~Rio (2009).
+Bernstein inequality and moderate deviations under strong mixing conditions.
+In \emph{High Dimensional Probability V}, 273--292.
+\url{https://doi.org/10.1214/09-IMSCOLL518}.
+
+\bibitem{MollenhauerEtAl2022}
+M.~Mollenhauer, S.~Klus, C.~Sch\"utte and P.~Koltai (2022).
+Kernel autocovariance operators of stationary processes: estimation and
+convergence.
+\emph{Journal of Machine Learning Research} \textbf{23}(327), 1--34.
+\url{https://www.jmlr.org/papers/v23/20-442.html}.
+
+\bibitem{GyoriPaulin2012}
+B.~M. Gyori and D.~Paulin (2012).
+Non-asymptotic confidence intervals for MCMC in practice.
+arXiv preprint; journal publication not verified.
+\url{https://arxiv.org/abs/1212.2016}.
+
+\bibitem{MelnykBanerjee2017}
+I.~Melnyk and A.~Banerjee (2017).
+A spectral algorithm for inference in hidden semi-Markov models.
+\emph{Journal of Machine Learning Research} \textbf{18}(35), 1--39.
+\url{https://www.jmlr.org/papers/v18/15-468.html}.
+
+\bibitem{BarbuLimnios2006}
+V.~Barbu and N.~Limnios (2006).
+Maximum likelihood estimation for hidden semi-Markov models.
+\emph{Comptes Rendus Math\'ematique} \textbf{342}, 201--205.
+\url{https://doi.org/10.1016/j.crma.2005.12.013}.
+
+\bibitem{TrevezasLimnios2010}
+S.~Trevezas and N.~Limnios (2010).
+Maximum likelihood estimation for general hidden semi-Markov processes with
+backward recurrence time dependence.
+\emph{Journal of Mathematical Sciences} \textbf{163}(3), 262--274.
+\url{https://doi.org/10.1007/s10958-009-9675-9}.
+
+\bibitem{Farcomeni2025}
+A.~Farcomeni (2025).
+Exact score and information matrix for panel hidden semi-Markov models.
+\emph{Statistics and Computing} \textbf{35}, article 55.
+\url{https://doi.org/10.1007/s11222-025-10585-y}.
+
+\bibitem{KhorshidianEtAl2016}
+K.~Khorshidian, F.~Negahdari and H.~A. Mardnifard (2016).
+Estimation for discrete-time semi-Markov reward processes: analysis and
+inference.
+\emph{Methodology and Computing in Applied Probability} \textbf{18},
+885--900.
+\url{https://doi.org/10.1007/s11009-015-9468-1}.
+
+\bibitem{VotsiEtAl2021}
+I.~Votsi, G.~Gayraud, V.~S. Barbu and N.~Limnios (2021).
+Hypotheses testing and posterior concentration rates for semi-Markov
+processes.
+\emph{Statistical Inference for Stochastic Processes} \textbf{24}, 707--732.
+\url{https://doi.org/10.1007/s11203-021-09247-3}.
+
+\bibitem{DeCastroGassiatLeCorff2017}
+Y.~De Castro, E.~Gassiat and S.~Le Corff (2017).
+Consistent estimation of the filtering and marginal smoothing distributions
+in nonparametric hidden Markov models.
+\emph{IEEE Transactions on Information Theory} \textbf{63}, 4758--4777.
+\url{https://doi.org/10.1109/TIT.2017.2696959}.
+
+\end{thebibliography}
+
+\end{document}
